@@ -55,23 +55,27 @@ public class Jugador {
         FichaDomino ficha1 = new FichaDomino(6,6);
         FichaDomino ficha2 = new FichaDomino(3,4);
         FichaDomino ficha3 = new FichaDomino(2,5);
+        FichaDomino ficha4 = new FichaDomino(0,1);
 
-        Jugador jugador = new Jugador("Alexandra");
+        Jugador jugador1 = new Jugador("Alexandra");
+
+        Jugador jugador2 = new Jugador("Jaume");
 
 
-        jugador.agregarFicha(ficha1);
-        jugador.agregarFicha(ficha2);
-        jugador.agregarFicha(ficha3);
+        jugador1.agregarFicha(ficha1);
+        jugador1.agregarFicha(ficha2);
+        jugador2.agregarFicha(ficha3);
+        jugador2.agregarFicha(ficha4);
 
-        System.out.println("Estado inicial:");
-        jugador.imprimirFichas();
-        boolean eliminada = jugador.eliminarFicha(ficha2);
-        System.out.println("\n¿Se eliminó la ficha [3|5]? " + eliminada);
+        Equipo equipo1 = new Equipo("Equipo 1");
+        equipo1.agregarJugador(jugador1);
+        equipo1.agregarJugador(jugador2);
 
-        System.out.println("\nEstado después de eliminar una ficha:");
-        jugador.imprimirFichas();
+        equipo1.imprimirFichasEquipo();
 
-        System.out.println("\nNúmero total de fichas: " + jugador.getNumeroFichas());
+        int totalFichas = equipo1.contarFichasEquipo();
+        System.out.println("total fichas equipo: " + totalFichas);
+
     }
 
 }

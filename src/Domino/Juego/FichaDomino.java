@@ -28,9 +28,9 @@ public class FichaDomino {
             return false;
         }
 
-        FichaDomino fichaGirada = (FichaDomino) obj;
+        FichaDomino otraFicha = (FichaDomino) obj;
 
-        return ((lado1 == fichaGirada.lado2 && lado2 == fichaGirada.lado1) ||
-          (lado1 == fichaGirada.lado1 && lado2 == fichaGirada.lado2));
+        return ((lado1 == otraFicha.lado2 && lado2 == otraFicha.lado1) ||
+          (lado1 == otraFicha.lado1 && lado2 == otraFicha.lado2));
     }// Aqui solo es para comprobar que son iguales tanto si esta de un lado o de otro la ficha
 }
