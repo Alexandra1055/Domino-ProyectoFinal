@@ -1,7 +1,7 @@
 package Domino.ENUMS;
 
 public enum Pais {
-    ESPAÑOL("Dominó español", 28, 4, 100, "Comienza con el doble 6. Si nadie puede jugar, gana quien tiene menos puntos."),
+    ESPANOL("Dominó español", 28, 4, 100, "Comienza con el doble 6. Si nadie puede jugar, gana quien tiene menos puntos."),
     MEXICANO("Dominó mexicano", 55, 8, 0, "Usa tren personal y tren común. El doble debe cerrarse antes de jugar otra ficha."),
     LATINO("Dominó latino", 28, 4, 0, "Empieza quien tenga el doble mayor. Se permiten comunicaciones en pareja."),
     COLOMBIANO("Dominó colombiano", 28, 4, 0, "Se reparten 7 fichas. Gana la pareja con menos puntos en caso de cierre."),
