@@ -17,6 +17,7 @@ public class FichaDomino {
         return lado2;
     }
 
+
     @Override
     public String toString(){
         return "[" + lado1 + "|" + lado2 + "]"; //esto es para que se vea como las fichas con la linea en medio
