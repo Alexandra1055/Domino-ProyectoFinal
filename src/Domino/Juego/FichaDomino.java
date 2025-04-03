@@ -17,6 +17,9 @@ public class FichaDomino {
         return lado2;
     }
 
+    public FichaDomino girarFicha() {
+        return new FichaDomino(lado2, lado1);
+    }
 
     @Override
     public String toString(){
