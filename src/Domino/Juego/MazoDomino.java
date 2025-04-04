@@ -35,7 +35,7 @@ public class MazoDomino {
 
     public static void main(String[] args) {
         MazoDomino mazo = new MazoDomino();
-        mazo.crearFichas(6); // crea 28 fichas
+        mazo.crearFichas(9); // crea 28 fichas
 
         Jugador jugador1 = new Jugador("Alexandra");
         Jugador jugador2 = new Jugador("Jaume");

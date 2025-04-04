@@ -35,6 +35,6 @@ public class FichaDomino {
         FichaDomino otraFicha = (FichaDomino) obj;
 
         return ((lado1 == otraFicha.lado2 && lado2 == otraFicha.lado1) ||
-          (lado1 == otraFicha.lado1 && lado2 == otraFicha.lado2));
+                (lado1 == otraFicha.lado1 && lado2 == otraFicha.lado2));
     }// Aqui solo es para comprobar que son iguales tanto si esta de un lado o de otro la ficha
 }

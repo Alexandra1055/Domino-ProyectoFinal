@@ -4,11 +4,12 @@ import java.util.ArrayList;
 public class Jugador {
     private String nombre;
     private ArrayList<FichaDomino> fichas;
-
+    private ArrayList<FichaDomino> trenPersonal; // atributo para el tren personal que usaremos para el juego mexicano
 
     public Jugador(String nombre){
         this.nombre = nombre;
         this.fichas = new ArrayList<FichaDomino>();
+        this.trenPersonal = new ArrayList<FichaDomino>();
     }
 
     public void agregarFicha(FichaDomino ficha) {
@@ -50,6 +51,28 @@ public class Jugador {
     public boolean tieneFichas(){
         return !fichas.isEmpty(); //para cuando se quede sin
     }
+
+    //metodos para el tren personal: get, set, añadire imprimir
+    public ArrayList<FichaDomino> getTrenPersonal() {
+        return trenPersonal;
+    }
+
+    public void setTrenPersonal(ArrayList<FichaDomino> trenPersonal) {
+        this.trenPersonal = trenPersonal;
+    }
+
+    public void agregarAlTrenPersonal(FichaDomino ficha){
+        trenPersonal.add(ficha);
+    }
+
+    public void imprimirTrenPersonal(){
+
+        for (int i = 0; i < trenPersonal.size(); i++) {
+            System.out.print(trenPersonal.get(i).toString() + " ");
+        }
+        System.out.println();
+    }
+
 
     public static void main(String[] args) {
         FichaDomino ficha1 = new FichaDomino(6,6);
