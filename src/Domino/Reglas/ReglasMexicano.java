@@ -27,6 +27,7 @@ public class ReglasMexicano implements ReglasDomino{
             mazo.repartirFichas(jugador,fichasPorJugador);
             jugador.setTrenPersonal(new ArrayList<FichaDomino>());
         }
+        stock = mazo.getStock();
         trenComun = new ArrayList<FichaDomino>();
 
         FichaDomino dobleInicial = null;
@@ -105,6 +106,10 @@ public class ReglasMexicano implements ReglasDomino{
         }
 
         return false;
+    }
+
+    public ArrayList<FichaDomino> getStock() {
+        return stock;
     }
 
     public ArrayList<FichaDomino> getTrenComun() {

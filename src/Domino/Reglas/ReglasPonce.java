@@ -1,29 +1,29 @@
 package Domino.Reglas;
 
-import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
+import Domino.Juego.FichaDomino;
 import Domino.Juego.MazoDomino;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReglasLatino implements ReglasDomino{
+
+public class ReglasPonce implements ReglasDomino {
 
     private ArrayList<FichaDomino> stock;
 
-    public ReglasLatino() {
+    public ReglasPonce() {
         stock = new ArrayList<>();
     }
 
     @Override
     public void iniciarMano(List<Jugador> jugadores) {
         MazoDomino mazo = new MazoDomino();
-        mazo.crearFichas(6);
-        int fichasPorJugador = 5;
-
+        mazo.crearFichas(9);
+        int fichasPorJugador = 7;
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);
-            mazo.repartirFichas(jugador,fichasPorJugador);
+            mazo.repartirFichas(jugador, fichasPorJugador);
         }
         stock = mazo.getStock();
     }
@@ -31,7 +31,6 @@ public class ReglasLatino implements ReglasDomino{
     @Override
     public int calcularPuntuacion(List<Jugador> jugadores) {
         int puntuacionTotal = 0;
-
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);
             for (int j = 0; j < jugador.getFichas().size(); j++) {
@@ -39,14 +38,12 @@ public class ReglasLatino implements ReglasDomino{
                 puntuacionTotal += ficha.getLado1() + ficha.getLado2();
             }
         }
-
         return puntuacionTotal;
     }
 
     @Override
     public Jugador determinarJugadorInicial(List<Jugador> jugadores) {
-
-        for (int i = 6; i >=0; i--) {
+        for (int i = 9; i >=0; i--) {
             for (int j = 0; j < jugadores.size(); j++) {
                 Jugador jugador = jugadores.get(j);
                 ArrayList<FichaDomino> fichas = jugador.getFichas();
@@ -64,18 +61,17 @@ public class ReglasLatino implements ReglasDomino{
 
     @Override
     public boolean sePuedeJugar(List<Jugador> jugadores) {
-
         for (int i = 0; i < jugadores.size(); i++) {
-            if (jugadores.get(i).tieneFichas()){
+            if (jugadores.get(i).tieneFichas()) {
                 return true;
             }
         }
-
         return false;
     }
 
     public ArrayList<FichaDomino> getStock() {
         return stock;
     }
+
 
 }

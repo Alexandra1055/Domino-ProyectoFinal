@@ -1,17 +1,17 @@
 package Domino.Reglas;
 
-import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
+import Domino.Juego.FichaDomino;
 import Domino.Juego.MazoDomino;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReglasLatino implements ReglasDomino{
+public class ReglasChileno implements ReglasDomino{
 
     private ArrayList<FichaDomino> stock;
 
-    public ReglasLatino() {
+
+    public ReglasChileno(){
         stock = new ArrayList<>();
     }
 
@@ -20,18 +20,17 @@ public class ReglasLatino implements ReglasDomino{
         MazoDomino mazo = new MazoDomino();
         mazo.crearFichas(6);
         int fichasPorJugador = 5;
-
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);
-            mazo.repartirFichas(jugador,fichasPorJugador);
+            mazo.repartirFichas(jugador, fichasPorJugador);
         }
         stock = mazo.getStock();
     }
 
+
     @Override
     public int calcularPuntuacion(List<Jugador> jugadores) {
         int puntuacionTotal = 0;
-
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);
             for (int j = 0; j < jugador.getFichas().size(); j++) {
@@ -39,7 +38,6 @@ public class ReglasLatino implements ReglasDomino{
                 puntuacionTotal += ficha.getLado1() + ficha.getLado2();
             }
         }
-
         return puntuacionTotal;
     }
 
@@ -62,20 +60,21 @@ public class ReglasLatino implements ReglasDomino{
         return jugadores.get(0);
     }
 
-    @Override
-    public boolean sePuedeJugar(List<Jugador> jugadores) {
+        @Override
+        public boolean sePuedeJugar(List<Jugador> jugadores) {
 
-        for (int i = 0; i < jugadores.size(); i++) {
-            if (jugadores.get(i).tieneFichas()){
-                return true;
+            for (int i = 0; i < jugadores.size(); i++) {
+                if (jugadores.get(i).tieneFichas()){
+                    return true;
+                }
             }
+
+            return false;
         }
 
-        return false;
-    }
+        public ArrayList<FichaDomino> getStock() {
+            return stock;
+        }
 
-    public ArrayList<FichaDomino> getStock() {
-        return stock;
-    }
 
 }
