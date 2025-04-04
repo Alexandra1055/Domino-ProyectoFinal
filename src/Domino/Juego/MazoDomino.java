@@ -21,9 +21,12 @@ public class MazoDomino {
         ArrayList<FichaDomino> mano = new ArrayList<>();
         Random random = new Random();
 
-        for (int i = 0; i < cantidad && !fichas.isEmpty(); i++) {
+        int fichasRepartidas = 0;
+
+        while (fichasRepartidas < cantidad && !fichas.isEmpty()){
             int index = random.nextInt(fichas.size());
             mano.add(fichas.remove(index));
+            fichasRepartidas++;
         }
 
         jugador.setFichas(mano);
@@ -33,18 +36,9 @@ public class MazoDomino {
         return fichas;
     }
 
-    public static void main(String[] args) {
-        MazoDomino mazo = new MazoDomino();
-        mazo.crearFichas(9); // crea 28 fichas
-
-        Jugador jugador1 = new Jugador("Alexandra");
-        Jugador jugador2 = new Jugador("Jaume");
-
-        mazo.repartirFichas(jugador1, 7);
-        mazo.repartirFichas(jugador2, 7);
-
-        jugador1.imprimirFichas();
-        jugador2.imprimirFichas();
+    public ArrayList<FichaDomino> getStock() {
+        return fichas;
     }
+
 }
 

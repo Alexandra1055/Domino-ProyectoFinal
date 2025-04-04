@@ -9,9 +9,11 @@ import java.util.List;
 //como el Mexicano tiene algo llamado trenes personales o comunes, como esto es una peculiaridad del domino mexicano que se debe mantener
 public class ReglasMexicano implements ReglasDomino{
     private ArrayList<FichaDomino> trenComun; //tren personal lo defini en jugador
+    private ArrayList<FichaDomino> stock;
 
     public ReglasMexicano(){
         trenComun = new ArrayList<FichaDomino>();
+        stock = new ArrayList<>();
     }
 
     @Override
