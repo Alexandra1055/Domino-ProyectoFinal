@@ -8,12 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ReglasPonce implements ReglasDomino {
-
-    private ArrayList<FichaDomino> stock;
+public class ReglasPonce extends ReglasConStock{
 
     public ReglasPonce() {
-        stock = new ArrayList<>();
+        super();
     }
 
     @Override
@@ -68,10 +66,5 @@ public class ReglasPonce implements ReglasDomino {
         }
         return false;
     }
-
-    public ArrayList<FichaDomino> getStock() {
-        return stock;
-    }
-
 
 }

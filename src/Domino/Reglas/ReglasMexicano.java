@@ -7,13 +7,12 @@ import Domino.Juego.MazoDomino;
 import java.util.ArrayList;
 import java.util.List;
 //como el Mexicano tiene algo llamado trenes personales o comunes, como esto es una peculiaridad del domino mexicano que se debe mantener
-public class ReglasMexicano implements ReglasDomino{
+public class ReglasMexicano extends ReglasConStock {
     private ArrayList<FichaDomino> trenComun; //tren personal lo defini en jugador
-    private ArrayList<FichaDomino> stock;
 
     public ReglasMexicano(){
+        super();
         trenComun = new ArrayList<FichaDomino>();
-        stock = new ArrayList<>();
     }
 
     @Override
@@ -106,10 +105,6 @@ public class ReglasMexicano implements ReglasDomino{
         }
 
         return false;
-    }
-
-    public ArrayList<FichaDomino> getStock() {
-        return stock;
     }
 
     public ArrayList<FichaDomino> getTrenComun() {

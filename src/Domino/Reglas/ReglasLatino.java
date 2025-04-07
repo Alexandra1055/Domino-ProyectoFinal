@@ -7,12 +7,10 @@ import Domino.Juego.MazoDomino;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReglasLatino implements ReglasDomino{
-
-    private ArrayList<FichaDomino> stock;
+public class ReglasLatino extends ReglasConStock{
 
     public ReglasLatino() {
-        stock = new ArrayList<>();
+        super();
     }
 
     @Override
@@ -72,10 +70,6 @@ public class ReglasLatino implements ReglasDomino{
         }
 
         return false;
-    }
-
-    public ArrayList<FichaDomino> getStock() {
-        return stock;
     }
 
 }

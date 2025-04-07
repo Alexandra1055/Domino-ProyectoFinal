@@ -6,13 +6,10 @@ import Domino.Juego.MazoDomino;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReglasVenezolano implements ReglasDomino{
-
-    private ArrayList<FichaDomino> stock;
-
+public class ReglasVenezolano extends ReglasConStock{
 
     public ReglasVenezolano(){
-        stock = new ArrayList<>();
+        super();
     }
 
     @Override
@@ -77,9 +74,6 @@ public class ReglasVenezolano implements ReglasDomino{
         return false;
     }
 
-    public ArrayList<FichaDomino> getStock() {
-        return stock;
-    }
 
 }
 

@@ -6,13 +6,10 @@ import Domino.Juego.MazoDomino;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReglasChileno implements ReglasDomino{
-
-    private ArrayList<FichaDomino> stock;
-
+public class ReglasChileno extends ReglasConStock{
 
     public ReglasChileno(){
-        stock = new ArrayList<>();
+        super();
     }
 
     @Override
@@ -70,10 +67,6 @@ public class ReglasChileno implements ReglasDomino{
             }
 
             return false;
-        }
-
-        public ArrayList<FichaDomino> getStock() {
-            return stock;
         }
 
 
