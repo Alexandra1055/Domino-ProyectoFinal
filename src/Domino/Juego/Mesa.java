@@ -1,5 +1,7 @@
 package Domino.Juego;
 
+import Domino.Reglas.ReglasConStock;
+
 import java.util.ArrayList;
 
 public class Mesa {
@@ -67,6 +69,19 @@ public class Mesa {
         int valorMesa = valorFichaLadoIzquierdo();
 
         return (ficha.getLado1() == valorMesa || ficha.getLado2() == valorMesa);
+    }
+
+    public boolean esJugadaValida(Jugador jugador){
+        ArrayList<FichaDomino> fichas = jugador.getFichas();
+
+        for (int i = 0; i < fichas.size(); i++) {
+            FichaDomino ficha = fichas.get(i);
+
+            if (puedeColocarseIzquierda(ficha) || puedeColocarseDerecha(ficha)){
+                return true;
+            }
+        }
+        return false;
     }
 
 

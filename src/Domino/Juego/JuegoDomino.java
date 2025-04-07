@@ -54,4 +54,7 @@ public abstract class JuegoDomino {
         this.reglas = reglas;
     }
 
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
+    }
 }
