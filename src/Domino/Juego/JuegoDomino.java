@@ -2,6 +2,7 @@ package Domino.Juego;
 
 import Domino.ENUMS.Modalidad;
 import Domino.ENUMS.Pais;
+import Domino.Reglas.ReglasDomino;
 
 import java.util.ArrayList;
 
@@ -11,21 +12,22 @@ public abstract class JuegoDomino {
     protected int puntuacionGanadora;
     protected ArrayList<Jugador> jugadores;
     protected int turnoActual;
+    protected ReglasDomino reglas;
 
-    public JuegoDomino(Pais pais, Modalidad modalidad){
+    public JuegoDomino(Pais pais, Modalidad modalidad, ReglasDomino reglas){
         this.pais = pais;
         this.modalidad = modalidad;
         this.puntuacionGanadora = pais.getPuntuacionGanadora();
         this.jugadores = new ArrayList<Jugador>();
         this.turnoActual = 0;
-        //implementar las reglas de cada modalidad!!!
+        this.reglas = reglas;
     }
 
     public void agregarJugador(Jugador jugador){
         jugadores.add(jugador);
     }
 
-    public abstract void iniciarPartida(); //!!!!podria crear subclases segun si incia la partida individual o en equipo
+    public abstract void iniciarPartida();
 
     public void mostrarEstado(){
 
@@ -39,40 +41,17 @@ public abstract class JuegoDomino {
 
     public void proximoTurno(){
 
-        turnoActual = (turnoActual + 1) % jugadores.size(); //va cambiando de jugadores en un bucle (como cuando haciamos el cifrado de cesar)
+        turnoActual = (turnoActual + 1) % jugadores.size(); //va cambiando de jugadores en un bucle
 
         System.out.println("Turno de : " + jugadores.get(turnoActual).getNombre());
     }
 
-    //pruebo con una de equipos
-    public static void main(String[] args) {
-        PartidaParejas partida = new PartidaParejas(Pais.ESPANOL, Modalidad.PAREJAS);
+    public ReglasDomino getReglas() {
+        return reglas;
+    }
 
-        Equipo equipo1 = new Equipo("Equipo 1");
-        Equipo equipo2 = new Equipo("Equipo 2");
-
-        Jugador J1 = new Jugador("Alexandra");
-        Jugador J2 = new Jugador("Jaume");
-        Jugador J3 = new Jugador("Cristian");
-        Jugador J4 = new Jugador("Sergio");
-
-        equipo1.agregarJugador(J1);
-        equipo1.agregarJugador(J2);
-
-        equipo2.agregarJugador(J3);
-        equipo2.agregarJugador(J4);
-
-        partida.agregarEquipo(equipo1);
-        partida.agregarEquipo(equipo2);
-
-        partida.iniciarPartida();
-        partida.mostrarEstado();
-
-        System.out.println("Cambiar turno");
-        partida.proximoTurno();
-        partida.proximoTurno();
-        partida.proximoTurno();
-        partida.proximoTurno();
+    public void setReglas(ReglasDomino reglas) {
+        this.reglas = reglas;
     }
 
 }
