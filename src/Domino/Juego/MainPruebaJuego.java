@@ -2,11 +2,17 @@ package Domino.Juego;
 
 import Domino.ENUMS.Modalidad;
 import Domino.ENUMS.Pais;
+import Domino.Reglas.ReglasConStock;
 import Domino.Reglas.ReglasDomino;
 import Domino.Reglas.ReglasEspanol;
 
+import java.util.List;
+import java.util.Scanner;
+
 public class MainPruebaJuego {
     public static void main(String[] args) {
+
+        Scanner imprimir = new Scanner(System.in);
         Pais pais = Pais.ESPANOL;
         Modalidad modalidad= Modalidad.INDIVIDUAL;
         ReglasDomino reglas = new ReglasEspanol();
@@ -26,17 +32,33 @@ public class MainPruebaJuego {
         partida.mostrarEstado();
 
         Mesa mesa = new Mesa();
+        TurnoJuego turnoJuego = new TurnoJuego(mesa);
 
-        if (!jugador1.getFichas().isEmpty()) {
-            FichaDomino fichaAColocar = jugador1.getFichas().get(0);
-            System.out.println("El jugador " + jugador1.getNombre() + " intenta colocar la ficha " + fichaAColocar.toString() + " a la derecha.");
-            mesa.agregarFichaDerecha(fichaAColocar);
-            jugador1.getFichas().remove(0);
+        List<Jugador> jugadores = partida.getJugadores();
+
+        int turnoActual = 0;
+        boolean partidaTerminada = false;
+
+        while (reglas.sePuedeJugar(jugadores) && !partidaTerminada) {
+            Jugador jugadorActual = jugadores.get(turnoActual);
+            System.out.println("\n=========================================");
+            System.out.println("Estado actual de la mesa:");
+            mesa.imprimirMesa();
+
+            if (reglas instanceof ReglasConStock) {
+                turnoJuego.turnoJugador(jugadorActual, (ReglasConStock) reglas);
+            } else {
+                turnoJuego.turnoJugador(jugadorActual, null);
+            }
+            if (jugadorActual.getFichas().isEmpty()) {
+                System.out.println("¡El jugador " + jugadorActual.getNombre() + " ha ganado la partida al quedarse sin fichas!");
+                partidaTerminada = true;
+                break;
+            }
+
+
+            turnoActual = (turnoActual + 1) % jugadores.size();
         }
 
-        mesa.imprimirMesa();
-
-        int puntuacion = reglas.calcularPuntuacion(partida.getJugadores());
-        System.out.println("Puntuación total de la ronda: " + puntuacion);
     }
 }

@@ -49,7 +49,7 @@ public class ReglasLatino extends ReglasConStock{
                 Jugador jugador = jugadores.get(j);
                 ArrayList<FichaDomino> fichas = jugador.getFichas();
                 for (int k = 0; k < fichas.size(); k++) {
-                    FichaDomino ficha = fichas.get(j);
+                    FichaDomino ficha = fichas.get(k);
                     if (ficha.getLado1() == i && ficha.getLado2() == i) {
                         return jugador;
                     }
