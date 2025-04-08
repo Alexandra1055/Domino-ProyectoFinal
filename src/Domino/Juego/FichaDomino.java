@@ -23,7 +23,7 @@ public class FichaDomino {
 
     @Override
     public String toString(){
-        return "[" + lado1 + "|" + lado2 + "]"; //esto es para que se vea como las fichas con la linea en medio
+        return "\u001B[30m\u001B[47m[" + lado1 + "|" + lado2 + "]\u001B[0m";
     }
 
     @Override
