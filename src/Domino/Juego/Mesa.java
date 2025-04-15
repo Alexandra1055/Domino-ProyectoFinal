@@ -92,20 +92,4 @@ public class Mesa {
         System.out.println();
     }
 
-
-    public static void main(String[] args) {
-        Mesa mesa = new Mesa();
-
-        FichaDomino ficha1 = new FichaDomino(6, 6);
-        FichaDomino ficha2 = new FichaDomino(3, 6);
-        FichaDomino ficha3 = new FichaDomino(2, 3);
-        FichaDomino ficha4 = new FichaDomino(3, 1);
-
-        mesa.agregarFichaDerecha(ficha1);
-        mesa.agregarFichaIzquierda(ficha2);
-        mesa.agregarFichaDerecha(ficha3);
-        mesa.agregarFichaIzquierda(ficha4);
-
-        mesa.imprimirMesa();
-    }
 }

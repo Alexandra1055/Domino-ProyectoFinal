@@ -2,8 +2,10 @@ package Domino.Reglas;
 
 import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
+import Domino.Juego.JugadorMexicano;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ReglasConStock implements ReglasDomino{
     protected ArrayList<FichaDomino> stock;
@@ -28,4 +30,8 @@ public abstract class ReglasConStock implements ReglasDomino{
     public ArrayList<FichaDomino> getStock() {
         return stock;
     }
+
+    public abstract void iniciarMano(List<Jugador> jugadores);
+
+
 }

@@ -2,11 +2,8 @@ package Domino.Juego;
 
 import Domino.ENUMS.Modalidad;
 import Domino.ENUMS.Pais;
-import Domino.Reglas.ReglasConStock;
 import Domino.Reglas.ReglasDomino;
 import Domino.Reglas.ReglasEspanol;
-
-import java.util.List;
 import java.util.Scanner;
 
 public class MainPruebaJuego {
@@ -14,51 +11,71 @@ public class MainPruebaJuego {
 
         Scanner imprimir = new Scanner(System.in);
         Pais pais = Pais.ESPANOL;
-        Modalidad modalidad= Modalidad.INDIVIDUAL;
+        Modalidad modalidad = Modalidad.PAREJAS;
         ReglasDomino reglas = new ReglasEspanol();
-        PartidaIndividual partida = new PartidaIndividual(pais,modalidad,reglas);
+        Mesa mesa = new Mesa();
+        PartidaParejas partida = new PartidaParejas(pais, modalidad, reglas, mesa);
 
         Jugador jugador1 = new Jugador("Alexandra");
         Jugador jugador2 = new Jugador("Jaume");
         Jugador jugador3 = new Jugador("Cristian");
         Jugador jugador4 = new Jugador("Sergio");
 
-        partida.agregarJugador(jugador1);
-        partida.agregarJugador(jugador2);
-        partida.agregarJugador(jugador3);
-        partida.agregarJugador(jugador4);
+        Equipo equipo1 = new Equipo("Equipo1");
+        Equipo equipo2 = new Equipo("Equipo2");
+        equipo1.agregarJugador(jugador1);
+        equipo1.agregarJugador(jugador2);
+        equipo2.agregarJugador(jugador3);
+        equipo2.agregarJugador(jugador4);
+
+        partida.agregarEquipo(equipo1);
+        partida.agregarEquipo(equipo2);
 
         partida.iniciarPartida();
+
+        System.out.println("\n=========================================");
+        System.out.println("Estado completo de los jugadores:");
         partida.mostrarEstado();
 
-        Mesa mesa = new Mesa();
-        TurnoJuego turnoJuego = new TurnoJuego(mesa);
-
-        List<Jugador> jugadores = partida.getJugadores();
-
-        int turnoActual = 0;
         boolean partidaTerminada = false;
-
-        while (reglas.sePuedeJugar(jugadores) && !partidaTerminada) {
-            Jugador jugadorActual = jugadores.get(turnoActual);
+        boolean primeraVez = true;
+        while (reglas.sePuedeJugar(partida.getJugadores()) && !partidaTerminada) {
             System.out.println("\n=========================================");
             System.out.println("Estado actual de la mesa:");
             mesa.imprimirMesa();
 
-            if (reglas instanceof ReglasConStock) {
-                turnoJuego.turnoJugador(jugadorActual, (ReglasConStock) reglas);
+            if (primeraVez) {
+                primeraVez = false;
             } else {
-                turnoJuego.turnoJugador(jugadorActual, null);
-            }
-            if (jugadorActual.getFichas().isEmpty()) {
-                System.out.println("¡El jugador " + jugadorActual.getNombre() + " ha ganado la partida al quedarse sin fichas!");
-                partidaTerminada = true;
-                break;
+                Jugador jugadorActual = partida.getJugadores().get(partida.turnoActual);
+                System.out.println("Turno del jugador " + jugadorActual.getNombre() + ":");
+                jugadorActual.imprimirFichas();
             }
 
+            partida.jugarTurno();
 
-            turnoActual = (turnoActual + 1) % jugadores.size();
+            for (int i = 0; i < partida.getJugadores().size(); i++) {
+                Jugador jugadorActual = partida.getJugadores().get(i);
+                if (jugadorActual.getFichas().isEmpty()) {
+                    System.out.println("¡El jugador " + jugadorActual.getNombre() +
+                            " ha ganado la partida al quedarse sin fichas!");
+                    partidaTerminada = true;
+                    break;
+                }
+            }
+            if (!partidaTerminada) {
+                partida.proximoTurno();
+            }
         }
 
+        System.out.println("\n=========================================");
+        System.out.println("Estado final de la mesa:");
+        mesa.imprimirMesa();
+        partida.mostrarEstado();
+        System.out.println("Puntuación final: " + reglas.calcularPuntuacion(partida.getJugadores()));
+        System.out.println("El jugador que inició la partida fue: " +
+                reglas.determinarJugadorInicial(partida.getJugadores()).getNombre());
+
+        imprimir.close();
     }
 }

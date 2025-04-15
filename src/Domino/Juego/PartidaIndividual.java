@@ -6,8 +6,8 @@ import Domino.Reglas.ReglasDomino;
 
 public class PartidaIndividual extends JuegoDomino{
 
-    public PartidaIndividual(Pais pais, Modalidad modalidad, ReglasDomino reglas) {
-        super(pais, modalidad, reglas);
+    public PartidaIndividual(Pais pais, Modalidad modalidad, ReglasDomino reglas, Mesa mesa) {
+        super(pais, modalidad, reglas, mesa);
     }
 
     @Override

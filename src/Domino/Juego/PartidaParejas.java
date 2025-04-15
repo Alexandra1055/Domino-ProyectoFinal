@@ -11,8 +11,8 @@ public class PartidaParejas extends JuegoDomino{
     private ArrayList<Equipo> equipos;
     private int turnoEquipo;
 
-    public PartidaParejas(Pais pais, Modalidad modalidad, ReglasDomino reglas){
-        super(pais,modalidad, reglas);
+    public PartidaParejas(Pais pais, Modalidad modalidad, ReglasDomino reglas, Mesa mesa) {
+        super(pais, modalidad, reglas, mesa);
         this.equipos = new ArrayList<Equipo>();
         this.turnoEquipo = 0;
     }
