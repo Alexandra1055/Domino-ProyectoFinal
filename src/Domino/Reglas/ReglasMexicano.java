@@ -10,48 +10,49 @@ import java.util.List;
 public class ReglasMexicano extends ReglasConStock {
     private ArrayList<FichaDomino> trenComun;
 
-    public ReglasMexicano(){
+    public ReglasMexicano() {
         super();
         trenComun = new ArrayList<FichaDomino>();
     }
 
     @Override
     public void iniciarMano(List<Jugador> jugadores) {
-        ArrayList<JugadorMexicano> jugadoresMexicanos = new ArrayList<>();
+        ArrayList<JugadorMexicano> jm = new ArrayList<JugadorMexicano>();
         for (int i = 0; i < jugadores.size(); i++) {
-            jugadoresMexicanos.add((JugadorMexicano) jugadores.get(i));
+            jm.add((JugadorMexicano) jugadores.get(i));
         }
-        MazoDomino mazo = new MazoDomino();
         mazo.crearFichas(9);
         int fichasPorJugador = 7;
-        for (int i = 0; i < jugadores.size(); i++) {
-            JugadorMexicano jugador = jugadoresMexicanos.get(i);
-            mazo.repartirFichas(jugador, fichasPorJugador);
-            jugador.setTrenPersonal(new ArrayList<FichaDomino>());
+        for (int i = 0; i < jm.size(); i++) {
+            JugadorMexicano j = jm.get(i);
+            mazo.repartirFichas(j, fichasPorJugador);
+            j.setTrenPersonal(new ArrayList<FichaDomino>());
         }
-        stock = mazo.getStock();
-        trenComun = new ArrayList<FichaDomino>();
+        stock.clear();
+        stock.addAll(mazo.getFichasRestantes());
+        trenComun.clear();
+
         FichaDomino dobleInicial = null;
-        int indiceInicial = -1;
-        for (int i = 0; i < jugadores.size(); i++) {
-            JugadorMexicano jugador = jugadoresMexicanos.get(i);
-            for (int j = 0; j < jugador.getFichas().size(); j++) {
-                FichaDomino ficha = jugador.getFichas().get(j);
-                if (ficha.getLado1() == ficha.getLado2()){
-                    if (dobleInicial == null || ficha.getLado1() > dobleInicial.getLado1()){
-                        dobleInicial = ficha;
-                        indiceInicial = i;
+        int indiceInit = -1;
+        for (int i = 0; i < jm.size(); i++) {
+            JugadorMexicano j = jm.get(i);
+            for (int k = 0; k < j.getFichas().size(); k++) {
+                FichaDomino f = j.getFichas().get(k);
+                if (f.getLado1() == f.getLado2()) {
+                    if (dobleInicial == null || f.getLado1() > dobleInicial.getLado1()) {
+                        dobleInicial = f;
+                        indiceInit = i;
                     }
                 }
             }
         }
-        if (dobleInicial != null && indiceInicial != -1){
-            JugadorMexicano jugadorInicial = jugadoresMexicanos.get(indiceInicial);
-            for (int i = 0; i < jugadorInicial.getFichas().size(); i++) {
-                FichaDomino ficha = jugadorInicial.getFichas().get(i);
-                if (ficha.equals(dobleInicial)){
-                    jugadorInicial.getFichas().remove(i);
-                    jugadorInicial.agregarAlTrenPersonal(dobleInicial);
+        if (dobleInicial != null && indiceInit != -1) {
+            JugadorMexicano j0 = jm.get(indiceInit);
+            for (int k = 0; k < j0.getFichas().size(); k++) {
+                FichaDomino f = j0.getFichas().get(k);
+                if (f.equals(dobleInicial)) {
+                    j0.getFichas().remove(k);
+                    j0.agregarAlTrenPersonal(dobleInicial);
                     break;
                 }
             }
@@ -60,47 +61,46 @@ public class ReglasMexicano extends ReglasConStock {
 
     @Override
     public int calcularPuntuacion(List<Jugador> jugadores) {
-        int puntuacionTotal = 0;
+        int puntuacion = 0;
+        Jugador ganador = null;
         for (int i = 0; i < jugadores.size(); i++) {
-            Jugador jugador = jugadores.get(i);
-            for (int j = 0; j < jugador.getFichas().size(); j++) {
-                FichaDomino ficha = jugador.getFichas().get(j);
-                puntuacionTotal += ficha.getLado1() + ficha.getLado2();
+            if (jugadores.get(i).getFichas().isEmpty()) {
+                ganador = jugadores.get(i);
+                break;
             }
         }
-        return puntuacionTotal;
+        for (int i = 0; i < jugadores.size(); i++) {
+            Jugador j = jugadores.get(i);
+            if (j != ganador) {
+                for (int k = 0; k < j.getFichas().size(); k++) {
+                    FichaDomino f = j.getFichas().get(k);
+                    puntuacion += f.getLado1() + f.getLado2();
+                }
+            }
+        }
+        return puntuacion;
     }
 
     @Override
     public Jugador determinarJugadorInicial(List<Jugador> jugadores) {
-        FichaDomino dobleInicial = null;
-        int indiceInicial = 0;
+        FichaDomino mejor = null;
+        int idx = 0;
         for (int i = 0; i < jugadores.size(); i++) {
-            Jugador jugador = jugadores.get(i);
-            for (int j = 0; j < jugador.getFichas().size(); j++) {
-                FichaDomino ficha = jugador.getFichas().get(j);
-                if (ficha.getLado1() == ficha.getLado2()){
-                    if (dobleInicial == null || ficha.getLado1() > dobleInicial.getLado1()){
-                        dobleInicial = ficha;
-                        indiceInicial = i;
+            Jugador j = jugadores.get(i);
+            for (int k = 0; k < j.getFichas().size(); k++) {
+                FichaDomino f = j.getFichas().get(k);
+                if (f.getLado1() == f.getLado2()) {
+                    if (mejor == null || f.getLado1() > mejor.getLado1()) {
+                        mejor = f;
+                        idx = i;
                     }
                 }
             }
         }
-        return jugadores.get(indiceInicial);
+        return jugadores.get(idx);
     }
 
-    @Override
-    public boolean sePuedeJugar(List<Jugador> jugadores) {
-        for (int i = 0; i < jugadores.size(); i++) {
-            if (jugadores.get(i).tieneFichas()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public ArrayList<FichaDomino> getTrenComun() {
+    public List<FichaDomino> getTrenComun() {
         return trenComun;
     }
 }
