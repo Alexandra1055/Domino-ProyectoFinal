@@ -28,8 +28,9 @@ public class Jugador {
     public void imprimirFichas(){
         System.out.println(nombre + " tiene las fichas: ");
         for (int i = 0; i < fichas.size(); i++) {
-            System.out.println(fichas.get(i).toString());
+            System.out.print(fichas.get(i).toString() + " ");
         }
+        System.out.println();
     }
     public int getNumeroFichas(){
         return fichas.size();
