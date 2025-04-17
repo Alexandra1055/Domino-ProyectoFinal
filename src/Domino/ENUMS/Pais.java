@@ -3,11 +3,11 @@ package Domino.ENUMS;
 public enum Pais {
     ESPANOL("Dominó español", 28, 4, 100, "Comienza con el doble 6. Si nadie puede jugar, gana quien tiene menos puntos."),
     MEXICANO("Dominó mexicano", 55, 8, 0, "Usa tren personal y tren común. El doble debe cerrarse antes de jugar otra ficha."),
-    LATINO("Dominó latino", 28, 4, 0, "Empieza quien tenga el doble mayor. Se permiten comunicaciones en pareja."),
+    LATINO("Dominó latino", 28, 4, 0, "Primer turno aleattori, en los siguientes empieza quien tenga mayor puntuacion. Se permiten comunicaciones en pareja."),
     COLOMBIANO("Dominó colombiano", 28, 4, 0, "Se reparten 7 fichas. Gana la pareja con menos puntos en caso de cierre."),
     CHILENO("Dominó chileno", 28, 4, 200, "Si nadie tiene el doble más alto, se pasa al siguiente. Énfasis en bloqueos."),
-    VENEZOLANO("Dominó venezolano", 28, 4, 100, "Sólo por parejas. Se juega siempre el doble más alto disponible."),
-    PONCE("Dominó Ponce (Puerto Rico)", 55, 4, 200, "Juego por equipos. Estilo agresivo y centrado en bloqueos frecuentes.");
+    VENEZOLANO("Dominó venezolano", 28, 4, 100, "Si no puedes colocar se le suman 25 puntos al jugador anterior. Se juega siempre el doble más alto disponible."),
+    PONCE("Dominó Ponce (Puerto Rico)", 55, 4, 200, "Estilo agresivo y centrado en bloqueos frecuentes.");
 
 
     private final String titulo;

@@ -62,8 +62,6 @@ public abstract class JuegoDomino {
 
     public void jugarTurno() {
         Jugador jugadorActual = jugadores.get(turnoActual);
-        System.out.println("Turno del jugador " + jugadorActual.getNombre());
-        System.out.println("Tu mano actual:");
         jugadorActual.imprimirFichas();
         while (!mesa.esJugadaValida(jugadorActual)) {
             System.out.println("No tienes fichas jugables.");
@@ -128,7 +126,6 @@ public abstract class JuegoDomino {
                 }
             }
             if (intentoExitoso) {
-                jugadorActual.getFichas().remove(index);
                 jugadaHecha = true;
             } else {
                 char reintentar = pedirOpcion("No se pudo realizar la jugada. ¿Quieres intentar de nuevo? (S=si, N=no): ", "SN");
