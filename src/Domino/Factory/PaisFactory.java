@@ -22,13 +22,4 @@ public class PaisFactory {
         }
     }
 
-    public static JuegoDomino crearPartida(Pais pais, Modalidad modalidad){
-        ReglasDomino reglas = crearReglas(pais);
-        Mesa mesa = new Mesa();
-        if (modalidad == Modalidad.INDIVIDUAL){
-            return new PartidaIndividual(pais, modalidad, reglas, mesa);
-        }else {
-            return new PartidaParejas(pais, modalidad, reglas, mesa);
-        }
-    }
 }
