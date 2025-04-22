@@ -3,10 +3,12 @@ package Domino.Reglas;
 import Domino.Juego.Jugador;
 import Domino.Juego.FichaDomino;
 import Domino.Juego.MazoDomino;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReglasVenezolano extends ReglasSinStock{
+public class ReglasVenezolano extends ReglasSinStock implements Serializable {
     @Override
     public void iniciarMano(List<Jugador> jugadores) {
         mazo.crearFichas(6);

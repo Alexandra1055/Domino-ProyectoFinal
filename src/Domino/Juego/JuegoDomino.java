@@ -5,10 +5,12 @@ import Domino.ENUMS.Pais;
 import Domino.Reglas.ReglasConStock;
 import Domino.Reglas.ReglasDomino;
 import Domino.Reglas.ReglasMexicano;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public abstract class JuegoDomino {
+public abstract class JuegoDomino implements Serializable {
     protected Pais pais;
     protected Modalidad modalidad;
     protected int puntuacionGanadora;

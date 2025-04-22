@@ -1,6 +1,7 @@
 package Domino.Juego;
+import java.io.Serializable;
 import java.util.ArrayList;
-public class Jugador {
+public class Jugador implements Serializable {
     private String nombre;
     private ArrayList<FichaDomino> fichas;
     public Jugador(String nombre){

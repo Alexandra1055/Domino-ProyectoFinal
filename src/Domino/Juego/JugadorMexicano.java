@@ -1,6 +1,7 @@
 package Domino.Juego;
+import java.io.Serializable;
 import java.util.ArrayList;
-public class JugadorMexicano extends Jugador {
+public class JugadorMexicano extends Jugador implements Serializable {
     private ArrayList<FichaDomino> trenPersonal;
     public JugadorMexicano(String nombre) {
         super(nombre);

@@ -2,9 +2,11 @@ package Domino.Reglas;
 
 import Domino.Juego.Jugador;
 import Domino.Juego.FichaDomino;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class ReglasChileno extends ReglasConStock {
+public class ReglasChileno extends ReglasConStock implements Serializable {
 
     @Override
     public void iniciarMano(List<Jugador> jugadores) {

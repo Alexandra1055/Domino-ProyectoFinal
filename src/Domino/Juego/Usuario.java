@@ -1,11 +1,12 @@
 package Domino.Juego;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import Domino.ENUMS.Pais;
 
-public class Usuario {
+public class Usuario implements Serializable {
     private String nombre;
     private Map<Pais,Integer> puntuacionesMaximas;
     //probare un Map en lugar de una lista, cuya clave sea la variable Pais y la puntuacion maxima obtenida, asi el usuario podra consultar sus puntos al iniciar sesion

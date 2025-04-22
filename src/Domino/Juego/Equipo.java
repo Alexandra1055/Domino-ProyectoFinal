@@ -1,8 +1,9 @@
 package Domino.Juego;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Equipo {
+public class Equipo implements Serializable {
     private String nombre; //equipo 1, equipo 2, por ejemplo, asi tengo donde meter los jugadores que van juntos
     private ArrayList<Jugador> jugadores;
 

@@ -2,9 +2,10 @@ package Domino.Juego;
 
 import Domino.Reglas.ReglasConStock;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Mesa {
+public class Mesa implements Serializable {
     ArrayList<FichaDomino> fichaMesa;
 
     public Mesa(){

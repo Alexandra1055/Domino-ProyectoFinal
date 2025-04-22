@@ -3,10 +3,11 @@ package Domino.Reglas;
 import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface ReglasDomino {
+public interface ReglasDomino extends Serializable {
 
     void iniciarMano(List<Jugador> jugadores);
 

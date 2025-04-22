@@ -4,9 +4,10 @@ import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
 import Domino.Juego.MazoDomino;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ReglasColombiano extends ReglasSinStock {
+public class ReglasColombiano extends ReglasSinStock implements Serializable {
     @Override
     public void iniciarMano(List<Jugador> jugadores) {
         mazo.crearFichas(6);

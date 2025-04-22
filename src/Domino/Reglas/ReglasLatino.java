@@ -2,10 +2,12 @@ package Domino.Reglas;
 
 import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
+
+import java.io.Serializable;
 import java.util.Random;
 import java.util.List;
 
-public class ReglasLatino extends ReglasSinStock{
+public class ReglasLatino extends ReglasSinStock implements Serializable {
     private Random rnd;
 
     public ReglasLatino() {

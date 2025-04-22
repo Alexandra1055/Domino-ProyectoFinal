@@ -4,10 +4,12 @@ import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
 import Domino.Juego.JugadorMexicano;
 import Domino.Juego.MazoDomino;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReglasMexicano extends ReglasConStock {
+public class ReglasMexicano extends ReglasConStock implements Serializable {
     private ArrayList<FichaDomino> trenComun;
 
     public ReglasMexicano() {

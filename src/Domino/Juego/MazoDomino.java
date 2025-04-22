@@ -1,9 +1,10 @@
 package Domino.Juego;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MazoDomino {
+public class MazoDomino implements Serializable {
     ArrayList<FichaDomino> fichas;
 
     public MazoDomino() {

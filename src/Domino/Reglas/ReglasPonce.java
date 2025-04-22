@@ -4,11 +4,12 @@ import Domino.Juego.Jugador;
 import Domino.Juego.FichaDomino;
 import Domino.Juego.MazoDomino;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ReglasPonce extends ReglasConStock {
+public class ReglasPonce extends ReglasConStock implements Serializable {
 
     @Override
     public void iniciarMano(List<Jugador> jugadores) {
