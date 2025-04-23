@@ -41,7 +41,7 @@ public abstract class JuegoDomino implements Serializable {
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);
             Output.mostrarConSalto("Jugador " + (i + 1) + " : " + jugador.getNombre());
-            jugador.imprimirFichas();
+            jugador.imprimirFichas(mesa);
         }
     }
 
@@ -78,13 +78,13 @@ public abstract class JuegoDomino implements Serializable {
 
     public void jugarTurno() {
         Jugador jugadorActual = jugadores.get(turnoActual);
-        jugadorActual.imprimirFichas();
+        jugadorActual.imprimirFichas(mesa);
         while (!mesa.esJugadaValida(jugadorActual)) {
             Output.mostrarConSalto("No tienes fichas jugables.");
             if (reglas instanceof ReglasConStock
                     && ((ReglasConStock) reglas).puedeRobarFicha(jugadorActual)) {
                 Output.mostrarConSalto("Ficha robada. Tu mano ahora es:");
-                jugadorActual.imprimirFichas();
+                jugadorActual.imprimirFichas(mesa);
             } else {
                 Output.mostrarConSalto("No hay fichas en el stock o no se permite robar. Pasas turno.");
                 return;

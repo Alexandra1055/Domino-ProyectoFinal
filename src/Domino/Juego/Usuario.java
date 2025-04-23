@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import Domino.ENUMS.Pais;
+import Domino.IO.Output;
 
 public class Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String nombre;
     private Map<Pais,Integer> puntuacionesMaximas;
     //probare un Map en lugar de una lista, cuya clave sea la variable Pais y la puntuacion maxima obtenida, asi el usuario podra consultar sus puntos al iniciar sesion
@@ -33,14 +36,14 @@ public class Usuario implements Serializable {
     }
 
     public void imprimirPuntuaciones(){
-        System.out.println("La puntuacion maxima de " + nombre + " es: ");
+        Output.mostrarConSalto("La puntuacion maxima de " + nombre + " es: ");
         ArrayList<Pais> claves = new ArrayList<Pais>(puntuacionesMaximas.keySet());
 
         for (int i = 0; i < claves.size(); i++) {
             Pais pais = claves.get(i);
             int puntuacion = puntuacionesMaximas.get(pais);
 
-            System.out.println(pais.getTitulo() + ": " + puntuacion + " puntos");
+            Output.mostrarConSalto(pais.getTitulo() + ": " + puntuacion + " puntos");
         }
     }
 

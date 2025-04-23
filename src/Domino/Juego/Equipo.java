@@ -32,12 +32,12 @@ public class Equipo implements Serializable {
         return jugadores;
     }
 
-    public void imprimirFichasEquipo(){
+    public void imprimirFichasEquipo(Mesa mesa){
         Output.mostrarConSalto("El equipo '" + nombre + "' ,tiene las fichas: ");
 
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);
-            jugador.imprimirFichas(); //uso el metodo de jugador para los equipos
+            jugador.imprimirFichas(mesa); //uso el metodo de jugador para los equipos
         }
     }
 

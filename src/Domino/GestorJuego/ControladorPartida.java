@@ -25,52 +25,53 @@ public class ControladorPartida {
     }
 
     public void iniciarPartidaNueva(){
-       Pais paisSeleccionado = seleccionarPais();
-       Modalidad modalidadSeleccionada = seleccionarModalidad();
-       int objetivoPuntos = paisSeleccionado.getPuntuacionGanadora();
-       boolean tieneObjetivo = paisSeleccionado.tieneObjetivo();
-       int mejorPuntuacion = usuario.getPuntuacionMaxima(paisSeleccionado);
+        Pais paisSeleccionado = seleccionarPais();
+        Modalidad modalidadSeleccionada = seleccionarModalidad();
+        int objetivoPuntos = paisSeleccionado.getPuntuacionGanadora();
+        boolean tieneObjetivo = paisSeleccionado.tieneObjetivo();
+        int mejorPuntuacion = usuario.getPuntuacionMaxima(paisSeleccionado);
 
-       boolean continuarJuego = true;
-       while (continuarJuego){
-           JuegoDomino partida = ModalidadFactory.crearPartida(paisSeleccionado,modalidadSeleccionada);
-           UtilidadesJuego.registrarJugadores(partida, usuario.getNombre());
-           Mesa mesa = partida.getMesa();
-           ReglasDomino reglas = partida.getReglas();
+        boolean continuarJuego = true;
+        while (continuarJuego){
+            JuegoDomino partida = ModalidadFactory.crearPartida(paisSeleccionado, modalidadSeleccionada);
+            UtilidadesJuego.registrarJugadores(partida, usuario.getNombre());
+            Mesa mesa = partida.getMesa();
+            ReglasDomino reglas = partida.getReglas();
 
-           reglas.iniciarMano(partida.getJugadores(), partida.getMesa());
+            reglas.iniciarMano(partida.getJugadores(), mesa);
 
-           Jugador primerJugador = reglas.determinarJugadorInicial(partida.getJugadores());
-           partida.setTurnoActual(partida.getJugadores().indexOf(primerJugador));
-           Output.mostrarConSalto("Empieza el jugador: " + primerJugador.getNombre());
+            Jugador primero = reglas.determinarJugadorInicial(partida.getJugadores());
+            partida.setTurnoActual(partida.getJugadores().indexOf(primero));
+            Output.mostrarConSalto("Empieza el jugador: " + primero.getNombre());
+            mesa.imprimirMesa();
+            partida.proximoTurno();
 
-           while (reglas.sePuedeJugar(partida.getJugadores())
-                   && !mesa.estaBloqueado(paisSeleccionado)) {
+            while (reglas.sePuedeJugar(partida.getJugadores()) && !mesa.estaBloqueado(paisSeleccionado)) {
+                Jugador turno = partida.getJugadorActual();
 
-               if (partida.getJugadorActual().getNombre()
-                       .equals(usuario.getNombre())) {
-                   partida.jugarTurno();
-               } else {
-                   UtilidadesJuego.jugarTurnoAutomatico(partida);
-               }
+                if (turno.getNombre().equals(usuario.getNombre())) {
+                    partida.jugarTurno();
+                } else {
+                    UtilidadesJuego.jugarTurnoAutomatico(partida);
+                    mesa.imprimirMesa();
+                }
+                if (reglas.sePuedeJugar(partida.getJugadores())) {
+                    partida.proximoTurno();
+                }
+            }
 
-               if (reglas.sePuedeJugar(partida.getJugadores())) {
-                   partida.proximoTurno();
-               }
-           }
+            UtilidadesJuego.procesarResultadoDePartida(partida,paisSeleccionado,mejorPuntuacion,usuario,usuarioDAO);
 
-           UtilidadesJuego.procesarResultadoDePartida(partida,paisSeleccionado,mejorPuntuacion,usuario,usuarioDAO);
-
-           String respuesta;
-           if (tieneObjetivo) {
-               respuesta = Input.leerLinea("Objetivo: " + objetivoPuntos + ". ¿Otra partida para superarlo? (S/N): ");
-           } else {
-               respuesta = Input.leerLinea("Tu récord: " + mejorPuntuacion + ". ¿Otra partida para superarlo? (S/N): ");
-           }
-           continuarJuego = respuesta.equalsIgnoreCase("S");
-       }
-       Output.mostrarConSalto("Fin de la partida en " + paisSeleccionado.getTitulo() + ". Puntuacion maxima: " + usuario.getPuntuacionMaxima(paisSeleccionado));
-
+            String pregunta;
+            if (tieneObjetivo) {
+                pregunta = "Objetivo: " + objetivoPuntos + ". ¿Otra partida para superarlo? (S/N): ";
+            } else {
+                pregunta = "Tu récord: " + mejorPuntuacion + ". ¿Otra partida para superarlo? (S/N): ";
+            }
+            String respuesta = Input.leerLinea(pregunta);
+            continuarJuego = respuesta.equalsIgnoreCase("S");
+        }
+        Output.mostrarConSalto("Fin de la partida en " + paisSeleccionado.getTitulo() + ". Puntuación máxima: " + usuario.getPuntuacionMaxima(paisSeleccionado));
     }
 
     private Pais seleccionarPais() {

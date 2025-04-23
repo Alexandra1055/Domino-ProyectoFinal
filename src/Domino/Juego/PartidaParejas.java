@@ -66,7 +66,7 @@ public class PartidaParejas extends JuegoDomino implements Serializable {
         for (int i = 0; i < equipos.size(); i++) {
             Equipo equipo = equipos.get(i);
             Output.mostrarConSalto("Equipo " + (i + 1) + " : " + equipo.getNombre());
-            equipo.imprimirFichasEquipo();
+            equipo.imprimirFichasEquipo(mesa);
         }
     }
 

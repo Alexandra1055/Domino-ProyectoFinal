@@ -87,12 +87,12 @@ public class Mesa implements Serializable {
         return false;
     }
 
-
-    public void imprimirMesa(){
+    public void imprimirMesa() {
+        Output.mostrarConSalto("Estado actual de la mesa:");
         for (int i = 0; i < fichaMesa.size(); i++) {
-            Output.mostrarConSalto(fichaMesa.get(i).toString() + " ");
+            Output.mostrarSinSalto(fichaMesa.get(i).toString() + " ");
         }
-        System.out.println();
+        Output.mostrarConSalto("");
     }
 
     public boolean estaBloqueado(Pais pais) {
