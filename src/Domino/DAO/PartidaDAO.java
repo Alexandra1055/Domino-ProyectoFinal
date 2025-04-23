@@ -16,47 +16,48 @@ public class PartidaDAO {
         }
     } // creo una carpeta para guardar las partidas
 
-    public void guardarPartida(String id, JuegoDomino partida){
-        File archivo = new File(RUTA_PARTIDAS, id + ".ser");
-
-        try( ObjectOutputStream oos = new ObjectOutputStream( new FileOutputStream( archivo ))){
+    public void guardarPartida(String nombreUsuario, int indicePais, JuegoDomino partida) {
+        String nombreFichero = nombreUsuario + "_" + indicePais + ".ser";
+        File archivo = new File(RUTA_PARTIDAS, nombreFichero);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
             oos.writeObject(partida);
-            System.out.println("Partida " + id + " guardada correctamente.");
-        }catch (IOException e){
-            System.err.println("Error al guardar partida " + id + " : " + e.getMessage());
+            System.out.println("Partida de " + nombreUsuario + " para país " + indicePais + " guardada.");
+        } catch (IOException e) {
+            System.err.println("Error al guardar partida: " + e.getMessage());
         }
-    }// serializa
+    } // serializa
 
-    public JuegoDomino cargarPartida(String id){
-        File archivo = new File(RUTA_PARTIDAS, id + ".ser");
-
+    public JuegoDomino cargarPartida(String nombreUsuario, int indicePais) {
+        String nombreFichero = nombreUsuario + "_" + indicePais + ".ser";
+        File archivo = new File(RUTA_PARTIDAS, nombreFichero);
         if (!archivo.exists()) {
-            System.err.println("No existe partida: " + archivo.getPath());
             return null;
         }
-
-        try( ObjectInputStream ois = new ObjectInputStream( new FileInputStream( archivo ))){
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
             return (JuegoDomino) ois.readObject();
-        }catch (IOException | ClassNotFoundException e){
-            System.err.println("Error al cargar partida " + id + " : " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error al cargar partida: " + e.getMessage());
             return null;
         }
     } //deserializa
 
-    public List<String> listaPartidas(){
+    public List<Integer> listaPartidasUsuario(String nombreUsuario) {
         File carpeta = new File(RUTA_PARTIDAS);
         File[] archivos = carpeta.listFiles();
-        List<String> ids = new ArrayList<String>();
-
-        if ( archivos != null ){
+        List<Integer> indices = new ArrayList<Integer>();
+        if (archivos != null) {
             for (int i = 0; i < archivos.length; i++) {
-                String name = archivos[i].getName();
-                if (name.endsWith(".ser")){
-                    ids.add(name.substring( 0, name.length() - 4 ));
+                String nombre = archivos[i].getName();
+                if (nombre.startsWith(nombreUsuario + "_") && nombre.endsWith(".ser")) {
+                    String parte = nombre.substring(nombreUsuario.length() + 1, nombre.length() - 4);
+                    try {
+                        indices.add(Integer.parseInt(parte));
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
             }
         }
-        return ids;
-    }
+        return indices;
+    }// listamos las partidas guardadas
 
 }

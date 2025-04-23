@@ -38,7 +38,7 @@ public class Jugador implements Serializable {
         String verde = "\u001B[32m";
         String rojo = "\u001B[31m";
         String reset = "\u001B[0m";
-        Output.mostrarConSalto("Estado actual de la mesa:");
+        Output.mostrarConSalto("Fichas en tu mano:");
         for (int i = 0; i < fichas.size(); i++) {
             FichaDomino ficha = fichas.get(i);
             boolean esJugable = mesa.puedeColocarseIzquierda(ficha) || mesa.puedeColocarseDerecha(ficha);

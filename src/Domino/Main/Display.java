@@ -67,15 +67,34 @@ public class Display {
     }
 
     private void cargarPartida() {
-        Output.mostrarConSalto("Partidas guardadas:");
-        List<String> ids = partidaDAO.listaPartidas();
-        for (int i = 0; i < ids.size(); i++) {
-            Output.mostrarConSalto((i + 1) + ": " + ids.get(i));
+        List<Integer> listaIndices = partidaDAO.listaPartidasUsuario(usuario.getNombre());
+        if (listaIndices.isEmpty()) {
+            Output.mostrarConSalto("No tienes ninguna partida guardada.");
+            return;
         }
-        String id = Input.leerLinea("ID de partida guardada: ");
-        JuegoDomino partida = partidaDAO.cargarPartida(id);
-        if (partida != null) {
-            Output.mostrarConSalto("Partida " + id + " cargada");
+
+        Output.mostrarConSalto("Partidas guardadas para " + usuario.getNombre() + ":");
+
+        for (int i = 0; i < listaIndices.size(); i++) {
+            int indicePais = listaIndices.get(i);
+            Pais pais = Pais.values()[indicePais];
+            Output.mostrarConSalto((i + 1) + "- " + pais.getTitulo());
+        }
+
+        int seleccion = Input.leerNumeroEntero("Selecciona la partida por número (1-" + listaIndices.size() + "): ") - 1;
+
+        if (seleccion < 0 || seleccion >= listaIndices.size()) {
+            Output.error("Selección inválida.");
+            return;
+        }
+
+        int indicePais = listaIndices.get(seleccion);
+        JuegoDomino partida = partidaDAO.cargarPartida(usuario.getNombre(), indicePais);
+
+        if (partida == null) {
+            Output.error("Error al cargar la partida de " + Pais.values()[indicePais].getTitulo());
+        } else {
+            Output.mostrarConSalto("Partida de " + Pais.values()[indicePais].getTitulo() + " cargada correctamente.");
             partida.iniciarPartida();
         }
     }

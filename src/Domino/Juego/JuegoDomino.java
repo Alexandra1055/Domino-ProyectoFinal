@@ -80,10 +80,8 @@ public abstract class JuegoDomino implements Serializable {
         Jugador jugadorActual = jugadores.get(turnoActual);
         jugadorActual.imprimirFichas(mesa);
         while (!mesa.esJugadaValida(jugadorActual)) {
-            Output.mostrarConSalto("No tienes fichas jugables.");
-            if (reglas instanceof ReglasConStock
-                    && ((ReglasConStock) reglas).puedeRobarFicha(jugadorActual)) {
-                Output.mostrarConSalto("Ficha robada. Tu mano ahora es:");
+            if (reglas instanceof ReglasConStock && ((ReglasConStock) reglas).puedeRobarFicha(jugadorActual)) {
+                Output.mostrarConSalto("Has robado una ficha. Tu mano ahora es:");
                 jugadorActual.imprimirFichas(mesa);
             } else {
                 Output.mostrarConSalto("No hay fichas en el stock o no se permite robar. Pasas turno.");
@@ -93,46 +91,38 @@ public abstract class JuegoDomino implements Serializable {
 
         boolean jugadaHecha = false;
         while (!jugadaHecha) {
+            jugadorActual.imprimirFichas(mesa);
             int index = pedirIndexFicha(jugadorActual);
             FichaDomino ficha = jugadorActual.getFichas().get(index);
-            boolean intentoExitoso = false;
 
-            char lado = pedirOpcion(
-                    "¿En qué lado de la mesa deseas colocar " + ficha.toString() + "? (I = izquierda, D = derecha): ",
-                    "ID"
-            );
-
-            if (lado == 'I') {
-                if (mesa.puedeColocarseIzquierda(ficha)) {
-                    mesa.agregarFichaIzquierda(ficha);
-                    jugadorActual.eliminarFicha(ficha);
-                    Output.mostrarConSalto("Ficha colocada a la izquierda de la mesa.");
-                    intentoExitoso = true;
-                } else {
-                    System.out.println("La ficha no se puede colocar a la izquierda.");
-                }
-            } else {
-                if (mesa.puedeColocarseDerecha(ficha)) {
-                    mesa.agregarFichaDerecha(ficha);
-                    jugadorActual.eliminarFicha(ficha);
-                    Output.mostrarConSalto("Ficha colocada a la derecha de la mesa.");
-                    intentoExitoso = true;
-                } else {
-                    Output.mostrarConSalto("La ficha no se puede colocar a la derecha.");
-                }
+            boolean puedeIzq = mesa.puedeColocarseIzquierda(ficha);
+            boolean puedeDer = mesa.puedeColocarseDerecha(ficha);
+            if (!puedeIzq && !puedeDer) {
+                Output.mostrarConSalto("Esa ficha no se puede jugar. Elige otra.");
+                continue;
             }
 
-            if (intentoExitoso) {
+            char lado;
+            if (puedeIzq && !puedeDer) {
+                lado = 'I';
+                Output.mostrarConSalto("Se ha colocado automáticamente a la izquierda.");
+            } else if (!puedeIzq && puedeDer) {
+                lado = 'D';
+                Output.mostrarConSalto("Se ha colocado automáticamente a la derecha.");
+            } else {
+                lado = pedirOpcion("¿En qué lado? (I=izquierda, D=derecha): ", "ID");
+            }
+
+            if (lado == 'I') {
+                mesa.agregarFichaIzquierda(ficha);
+                jugadorActual.eliminarFicha(ficha);
+                Output.mostrarConSalto("Ficha colocada a la izquierda de la mesa.");
                 jugadaHecha = true;
             } else {
-                char reintentar = pedirOpcion(
-                        "No se pudo realizar la jugada. ¿Quieres intentar de nuevo? (S = sí, N = no): ",
-                        "SN"
-                );
-                if (reintentar == 'N') {
-                    Output.mostrarConSalto("Pasas turno.");
-                    break;
-                }
+                mesa.agregarFichaDerecha(ficha);
+                jugadorActual.eliminarFicha(ficha);
+                Output.mostrarConSalto("Ficha colocada a la derecha de la mesa.");
+                jugadaHecha = true;
             }
         }
     }
