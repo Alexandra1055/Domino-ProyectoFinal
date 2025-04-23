@@ -44,19 +44,4 @@ public class Usuario implements Serializable {
         }
     }
 
-    public static void main(String[] args) {
-        Usuario usuario = new Usuario("Alexandra");
-
-        usuario.actualizarPuntuacion(Pais.ESPANOL, 80);
-        usuario.actualizarPuntuacion(Pais.MEXICANO, 120);
-        usuario.actualizarPuntuacion(Pais.LATINO, 180);
-
-
-        usuario.actualizarPuntuacion(Pais.ESPANOL, 50);
-
-
-        usuario.actualizarPuntuacion(Pais.ESPANOL, 180);
-
-        usuario.imprimirPuntuaciones();
-    }
 }

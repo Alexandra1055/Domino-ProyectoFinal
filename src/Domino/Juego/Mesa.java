@@ -1,6 +1,7 @@
 package Domino.Juego;
 
 import Domino.ENUMS.Pais;
+import Domino.IO.Output;
 import Domino.Reglas.ReglasConStock;
 
 import java.io.Serializable;
@@ -34,7 +35,7 @@ public class Mesa implements Serializable {
                 ficha = ficha.girarFicha();
             }
             if (!puedeColocarseIzquierda(ficha)) {
-                System.out.println("La ficha " + ficha.toString() + " NO se puede colocar a la izquierda.");
+                Output.mostrarConSalto("La ficha " + ficha.toString() + " NO se puede colocar a la izquierda.");
                 return;
             }
         }
@@ -48,7 +49,7 @@ public class Mesa implements Serializable {
                 ficha = ficha.girarFicha();
             }
             if (!puedeColocarseDerecha(ficha)) {
-                System.out.println("La ficha " + ficha.toString() + " NO se puede colocar a la derecha.");
+                Output.mostrarConSalto("La ficha " + ficha.toString() + " NO se puede colocar a la derecha.");
                 return;
             }
         }
@@ -89,7 +90,7 @@ public class Mesa implements Serializable {
 
     public void imprimirMesa(){
         for (int i = 0; i < fichaMesa.size(); i++) {
-            System.out.print(fichaMesa.get(i).toString() + " ");
+            Output.mostrarConSalto(fichaMesa.get(i).toString() + " ");
         }
         System.out.println();
     }

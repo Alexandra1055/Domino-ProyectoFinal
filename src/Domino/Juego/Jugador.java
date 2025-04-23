@@ -1,4 +1,6 @@
 package Domino.Juego;
+import Domino.IO.Output;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 public class Jugador implements Serializable {
@@ -27,11 +29,11 @@ public class Jugador implements Serializable {
         this.nombre = nombre;
     }
     public void imprimirFichas(){
-        System.out.println(nombre + " tiene las fichas: ");
+        Output.mostrarConSalto(nombre + " tiene las fichas:");
         for (int i = 0; i < fichas.size(); i++) {
-            System.out.print(fichas.get(i).toString() + " ");
+            Output.mostrarSinSalto(" " + fichas.get(i).toString());
         }
-        System.out.println();
+        Output.mostrarConSalto("");
     }
     public int getNumeroFichas(){
         return fichas.size();

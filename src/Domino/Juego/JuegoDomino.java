@@ -2,6 +2,7 @@ package Domino.Juego;
 
 import Domino.ENUMS.Modalidad;
 import Domino.ENUMS.Pais;
+import Domino.IO.Output;
 import Domino.Reglas.ReglasConStock;
 import Domino.Reglas.ReglasDomino;
 
@@ -39,7 +40,7 @@ public abstract class JuegoDomino implements Serializable {
     public void mostrarEstado() {
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);
-            System.out.println("Jugador " + (i + 1) + " : " + jugador.getNombre());
+            Output.mostrarConSalto("Jugador " + (i + 1) + " : " + jugador.getNombre());
             jugador.imprimirFichas();
         }
     }
@@ -79,13 +80,13 @@ public abstract class JuegoDomino implements Serializable {
         Jugador jugadorActual = jugadores.get(turnoActual);
         jugadorActual.imprimirFichas();
         while (!mesa.esJugadaValida(jugadorActual)) {
-            System.out.println("No tienes fichas jugables.");
+            Output.mostrarConSalto("No tienes fichas jugables.");
             if (reglas instanceof ReglasConStock
                     && ((ReglasConStock) reglas).puedeRobarFicha(jugadorActual)) {
-                System.out.println("Ficha robada. Tu mano ahora es:");
+                Output.mostrarConSalto("Ficha robada. Tu mano ahora es:");
                 jugadorActual.imprimirFichas();
             } else {
-                System.out.println("No hay fichas en el stock o no se permite robar. Pasas turno.");
+                Output.mostrarConSalto("No hay fichas en el stock o no se permite robar. Pasas turno.");
                 return;
             }
         }
@@ -105,7 +106,7 @@ public abstract class JuegoDomino implements Serializable {
                 if (mesa.puedeColocarseIzquierda(ficha)) {
                     mesa.agregarFichaIzquierda(ficha);
                     jugadorActual.eliminarFicha(ficha);
-                    System.out.println("Ficha colocada a la izquierda de la mesa.");
+                    Output.mostrarConSalto("Ficha colocada a la izquierda de la mesa.");
                     intentoExitoso = true;
                 } else {
                     System.out.println("La ficha no se puede colocar a la izquierda.");
@@ -114,10 +115,10 @@ public abstract class JuegoDomino implements Serializable {
                 if (mesa.puedeColocarseDerecha(ficha)) {
                     mesa.agregarFichaDerecha(ficha);
                     jugadorActual.eliminarFicha(ficha);
-                    System.out.println("Ficha colocada a la derecha de la mesa.");
+                    Output.mostrarConSalto("Ficha colocada a la derecha de la mesa.");
                     intentoExitoso = true;
                 } else {
-                    System.out.println("La ficha no se puede colocar a la derecha.");
+                    Output.mostrarConSalto("La ficha no se puede colocar a la derecha.");
                 }
             }
 
@@ -129,7 +130,7 @@ public abstract class JuegoDomino implements Serializable {
                         "SN"
                 );
                 if (reintentar == 'N') {
-                    System.out.println("Pasas turno.");
+                    Output.mostrarConSalto("Pasas turno.");
                     break;
                 }
             }
@@ -140,9 +141,9 @@ public abstract class JuegoDomino implements Serializable {
         int total = jugador.getFichas().size();
         int index;
         do {
-            System.out.println("¿Qué ficha deseas colocar? (0 a " + (total - 1) + "): ");
+            Output.mostrarConSalto("¿Qué ficha deseas colocar? (0 a " + (total - 1) + "): ");
             while (!imprimir.hasNextInt()) {
-                System.out.println("Error: introduce un número válido:");
+                Output.mostrarConSalto("Error: introduce un número válido:");
                 imprimir.next();
             }
             index = imprimir.nextInt();
@@ -155,7 +156,7 @@ public abstract class JuegoDomino implements Serializable {
         char opcion = ' ';
         boolean valido = false;
         while (!valido) {
-            System.out.println(mensaje);
+            Output.mostrarConSalto(mensaje);
             String entrada = imprimir.nextLine().trim().toUpperCase();
             if (!entrada.isEmpty() && opcionesValidas.indexOf(entrada.charAt(0)) != -1) {
                 opcion = entrada.charAt(0);

@@ -1,5 +1,7 @@
 package Domino.Juego;
 
+import Domino.IO.Output;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -17,7 +19,7 @@ public class Equipo implements Serializable {
             jugadores.add(jugador);
             return true;
         }else {
-            System.out.println("Los equipos no pueden estar formados por mas de 2 jugadores");
+            Output.mostrarConSalto("Los equipos no pueden estar formados por mas de 2 jugadores");
             return false;
         }
     }
@@ -31,7 +33,7 @@ public class Equipo implements Serializable {
     }
 
     public void imprimirFichasEquipo(){
-        System.out.println("El equipo '" + nombre + "' ,tiene las fichas: ");
+        Output.mostrarConSalto("El equipo '" + nombre + "' ,tiene las fichas: ");
 
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);

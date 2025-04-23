@@ -23,7 +23,7 @@ public class PartidaParejas extends JuegoDomino implements Serializable {
 
     @Override
     public void iniciarPartida() {
-        System.out.println("Partida por Parejas de Dominó: " + pais.getTitulo());
+        Output.mostrarConSalto("Partida por Parejas de Dominó: " + pais.getTitulo());
 
         int maxJugadores = 0;
         for (int i = 0; i < equipos.size(); i++) {
@@ -65,7 +65,7 @@ public class PartidaParejas extends JuegoDomino implements Serializable {
     public void mostrarEstado() {
         for (int i = 0; i < equipos.size(); i++) {
             Equipo equipo = equipos.get(i);
-            System.out.println("Equipo " + (i + 1) + " : " + equipo.getNombre());
+            Output.mostrarConSalto("Equipo " + (i + 1) + " : " + equipo.getNombre());
             equipo.imprimirFichasEquipo();
         }
     }
@@ -73,6 +73,6 @@ public class PartidaParejas extends JuegoDomino implements Serializable {
     @Override
     public void proximoTurno() {
         turnoActual = (turnoActual + 1) % jugadores.size();
-        System.out.println("Turno de : " + jugadores.get(turnoActual).getNombre());
+        Output.mostrarConSalto("Turno de : " + jugadores.get(turnoActual).getNombre());
     }
 }
