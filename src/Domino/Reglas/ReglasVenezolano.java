@@ -12,11 +12,25 @@ import java.util.List;
 
 public class ReglasVenezolano extends ReglasSinStock implements Serializable {
     @Override
-    public void iniciarMano(List<Jugador> jugadores) {
+    public void iniciarMano(List<Jugador> jugadores, Mesa mesa) {
         mazo.crearFichas(6);
         int fichasPorJugador = 7;
         for (int i = 0; i < jugadores.size(); i++) {
             mazo.repartirFichas(jugadores.get(i), fichasPorJugador);
+        }
+
+        Jugador turno = determinarJugadorInicial(jugadores);
+        FichaDomino dobleInicial = null;
+        for (int i = 0; i < turno.getFichas().size(); i++) {
+            FichaDomino f = turno.getFichas().get(i);
+            if (f.getLado1() == f.getLado2()
+                    && (dobleInicial == null || f.getLado1() > dobleInicial.getLado1())) {
+                dobleInicial = f;
+            }
+        }
+        if (dobleInicial != null) {
+            turno.eliminarFicha(dobleInicial);
+            mesa.agregarFichaDerecha(dobleInicial);
         }
     }
 

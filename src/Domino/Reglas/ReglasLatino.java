@@ -1,7 +1,9 @@
 package Domino.Reglas;
 
+import Domino.ENUMS.Pais;
 import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
+import Domino.Juego.Mesa;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -16,11 +18,25 @@ public class ReglasLatino extends ReglasSinStock implements Serializable {
     }
 
     @Override
-    public void iniciarMano(List<Jugador> jugadores) {
+    public void iniciarMano(List<Jugador> jugadores, Mesa mesa) {
         mazo.crearFichas(6);
         int fichasPorJugador = 7;
         for (int i = 0; i < jugadores.size(); i++) {
             mazo.repartirFichas(jugadores.get(i), fichasPorJugador);
+        }
+
+        Jugador turno = determinarJugadorInicial(jugadores);
+        FichaDomino dobleInicial = null;
+        for (int i = 0; i < turno.getFichas().size(); i++) {
+            FichaDomino f = turno.getFichas().get(i);
+            if (f.getLado1() == f.getLado2()
+                    && (dobleInicial == null || f.getLado1() > dobleInicial.getLado1())) {
+                dobleInicial = f;
+            }
+        }
+        if (dobleInicial != null) {
+            turno.eliminarFicha(dobleInicial);
+            mesa.agregarFichaDerecha(dobleInicial);
         }
     }
 
@@ -51,4 +67,12 @@ public class ReglasLatino extends ReglasSinStock implements Serializable {
         int idx = rnd.nextInt(jugadores.size());
         return jugadores.get(idx);
     }
+
+    @Override
+    public Jugador determinarGanadorBloqueo(List<Jugador> jugadores, Mesa mesa, Pais pais, int turnoActual){
+        int total = jugadores.size();
+        int indiceUltimo = (turnoActual - 1 + total) % total;
+        return jugadores.get(indiceUltimo);
+    }
+
 }

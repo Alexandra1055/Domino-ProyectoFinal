@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ReglasDomino extends Serializable {
 
-    void iniciarMano(List<Jugador> jugadores);
+    void iniciarMano(List<Jugador> jugadores, Mesa mesa);
 
     int calcularPuntuacion(List<Jugador> jugadores);
 

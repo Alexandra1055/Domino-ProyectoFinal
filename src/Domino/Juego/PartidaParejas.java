@@ -44,25 +44,20 @@ public class PartidaParejas extends JuegoDomino implements Serializable {
             }
         }
 
-        reglas.iniciarMano(jugadores);
+        reglas.iniciarMano(jugadores, mesa);
 
         Jugador primero = reglas.determinarJugadorInicial(jugadores);
 
         turnoActual = jugadores.indexOf(primero);
         Output.mostrarConSalto("Empieza el jugador: " + primero.getNombre());
 
-        while (reglas.sePuedeJugar(jugadores)){
+        while (reglas.sePuedeJugar(jugadores) && !mesa.estaBloqueado(pais)) {
             mesa.imprimirMesa();
-            mostrarEstado();
             jugarTurno();
-            if (reglas.sePuedeJugar(jugadores)){
+            if (reglas.sePuedeJugar(jugadores)) {
                 proximoTurno();
             }
         }
-
-        int puntuacion = reglas.calcularPuntuacion(jugadores);
-
-        Output.mostrarConSalto("¡Partida Finalizada! Puntuación de la ronda: " + puntuacion);
 
     }
 

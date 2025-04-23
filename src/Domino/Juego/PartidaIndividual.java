@@ -17,24 +17,20 @@ public class PartidaIndividual extends JuegoDomino implements Serializable {
     public void iniciarPartida() {
         Output.mostrarConSalto("Partida Individual Domino: " + pais.getTitulo());
 
-        reglas.iniciarMano(jugadores);
+        reglas.iniciarMano(jugadores, mesa);
 
         Jugador primero = reglas.determinarJugadorInicial(jugadores);
 
         turnoActual = jugadores.indexOf(primero);
         Output.mostrarConSalto("Empieza el jugador: " + primero.getNombre());
 
-        while (reglas.sePuedeJugar(jugadores)){
+        while (reglas.sePuedeJugar(jugadores) && !mesa.estaBloqueado(pais)) {
             mesa.imprimirMesa();
-            mostrarEstado();
             jugarTurno();
-            if (reglas.sePuedeJugar(jugadores)){
+            if (reglas.sePuedeJugar(jugadores)) {
                 proximoTurno();
             }
         }
 
-        int puntuacion = reglas.calcularPuntuacion(jugadores);
-
-        Output.mostrarConSalto("¡Partida Finalizada! Tu puntuación es: " + puntuacion);
     }
 }

@@ -1,69 +1,43 @@
 package Domino.Reglas;
 
-import Domino.Juego.FichaDomino;
-import Domino.Juego.Jugador;
-import Domino.Juego.JugadorMexicano;
-import Domino.Juego.MazoDomino;
+import Domino.ENUMS.Pais;
+import Domino.Juego.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReglasMexicano extends ReglasConStock implements Serializable {
-    private ArrayList<FichaDomino> trenComun;
-
-    public ReglasMexicano() {
-        super();
-        trenComun = new ArrayList<FichaDomino>();
-    }
 
     @Override
-    public void iniciarMano(List<Jugador> jugadores) {
-        ArrayList<JugadorMexicano> jm = new ArrayList<JugadorMexicano>();
-        for (int i = 0; i < jugadores.size(); i++) {
-            jm.add((JugadorMexicano) jugadores.get(i));
-        }
+    public void iniciarMano(List<Jugador> jugadores, Mesa mesa) {
         mazo.crearFichas(9);
         int fichasPorJugador = 7;
-        for (int i = 0; i < jm.size(); i++) {
-            JugadorMexicano j = jm.get(i);
-            mazo.repartirFichas(j, fichasPorJugador);
-            j.setTrenPersonal(new ArrayList<FichaDomino>());
+        for (int i = 0; i < jugadores.size(); i++) {
+            mazo.repartirFichas(jugadores.get(i), fichasPorJugador);
         }
         stock.clear();
         stock.addAll(mazo.getFichasRestantes());
-        trenComun.clear();
 
+        Jugador turno = determinarJugadorInicial(jugadores);
         FichaDomino dobleInicial = null;
-        int indiceInit = -1;
-        for (int i = 0; i < jm.size(); i++) {
-            JugadorMexicano j = jm.get(i);
-            for (int k = 0; k < j.getFichas().size(); k++) {
-                FichaDomino f = j.getFichas().get(k);
-                if (f.getLado1() == f.getLado2()) {
-                    if (dobleInicial == null || f.getLado1() > dobleInicial.getLado1()) {
-                        dobleInicial = f;
-                        indiceInit = i;
-                    }
-                }
+            for (int i = 0; i < turno.getFichas().size(); i++) {
+            FichaDomino f = turno.getFichas().get(i);
+            if (f.getLado1() == f.getLado2()
+                && (dobleInicial == null || f.getLado1() > dobleInicial.getLado1())) {
+                dobleInicial = f;
             }
         }
-        if (dobleInicial != null && indiceInit != -1) {
-            JugadorMexicano j0 = jm.get(indiceInit);
-            for (int k = 0; k < j0.getFichas().size(); k++) {
-                FichaDomino f = j0.getFichas().get(k);
-                if (f.equals(dobleInicial)) {
-                    j0.getFichas().remove(k);
-                    j0.agregarAlTrenPersonal(dobleInicial);
-                    break;
-                }
-            }
+        if (dobleInicial != null) {
+        turno.eliminarFicha(dobleInicial);
+        mesa.agregarFichaDerecha(dobleInicial);
         }
     }
 
+
     @Override
     public int calcularPuntuacion(List<Jugador> jugadores) {
-        int puntuacion = 0;
+        int puntos = 0;
         Jugador ganador = null;
         for (int i = 0; i < jugadores.size(); i++) {
             if (jugadores.get(i).getFichas().isEmpty()) {
@@ -76,17 +50,17 @@ public class ReglasMexicano extends ReglasConStock implements Serializable {
             if (j != ganador) {
                 for (int k = 0; k < j.getFichas().size(); k++) {
                     FichaDomino f = j.getFichas().get(k);
-                    puntuacion += f.getLado1() + f.getLado2();
+                    puntos += f.getLado1() + f.getLado2();
                 }
             }
         }
-        return puntuacion;
+        return puntos;
     }
 
     @Override
     public Jugador determinarJugadorInicial(List<Jugador> jugadores) {
         FichaDomino mejor = null;
-        int idx = 0;
+        Jugador elegido = jugadores.get(0);
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador j = jugadores.get(i);
             for (int k = 0; k < j.getFichas().size(); k++) {
@@ -94,15 +68,18 @@ public class ReglasMexicano extends ReglasConStock implements Serializable {
                 if (f.getLado1() == f.getLado2()) {
                     if (mejor == null || f.getLado1() > mejor.getLado1()) {
                         mejor = f;
-                        idx = i;
+                        elegido = j;
                     }
                 }
             }
         }
-        return jugadores.get(idx);
+        return elegido;
+    }
+    @Override
+    public Jugador determinarGanadorBloqueo(List<Jugador> jugadores, Mesa mesa, Pais pais, int turnoActual){
+        int total = jugadores.size();
+        int indiceUltimo = (turnoActual - 1 + total) % total;
+        return jugadores.get(indiceUltimo);
     }
 
-    public List<FichaDomino> getTrenComun() {
-        return trenComun;
-    }
 }
