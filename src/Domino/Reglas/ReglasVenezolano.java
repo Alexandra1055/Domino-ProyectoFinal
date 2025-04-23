@@ -1,8 +1,10 @@
 package Domino.Reglas;
 
+import Domino.ENUMS.Pais;
 import Domino.Juego.Jugador;
 import Domino.Juego.FichaDomino;
 import Domino.Juego.MazoDomino;
+import Domino.Juego.Mesa;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,6 +56,18 @@ public class ReglasVenezolano extends ReglasSinStock implements Serializable {
             }
         }
         return jugadores.get(0);
+    }
+
+    @Override
+    public Jugador determinarGanadorBloqueo(List<Jugador> jugadores, Mesa mesa, Pais pais, int turnoActual){
+        int total = jugadores.size();
+        int indiceUltimo = (turnoActual - 1 + total) % total;
+        return jugadores.get(indiceUltimo);
+    }
+
+    @Override
+    public int puntosBloqueo() {
+        return 25;
     }
 }
 

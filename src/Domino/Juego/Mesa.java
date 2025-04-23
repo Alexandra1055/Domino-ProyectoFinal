@@ -1,5 +1,6 @@
 package Domino.Juego;
 
+import Domino.ENUMS.Pais;
 import Domino.Reglas.ReglasConStock;
 
 import java.io.Serializable;
@@ -91,6 +92,30 @@ public class Mesa implements Serializable {
             System.out.print(fichaMesa.get(i).toString() + " ");
         }
         System.out.println();
+    }
+
+    public boolean estaBloqueado(Pais pais) {
+        if (fichaMesa.isEmpty()) {
+            return false;
+        }
+        int extremoIzq = valorFichaLadoIzquierdo();
+        int extremoDer = valorFichaLadoDerecho();
+        int contadorIzq = 0;
+        int contadorDer = 0;
+
+        int totalFichas = pais.getTotalFichas();
+        int umbral = (totalFichas == 28) ? 7 : 10;
+
+        for (int i = 0; i < fichaMesa.size(); i++) {
+            FichaDomino ficha = fichaMesa.get(i);
+            if (ficha.getLado1() == extremoIzq || ficha.getLado2() == extremoIzq) {
+                contadorIzq++;
+            }
+            if (ficha.getLado1() == extremoDer || ficha.getLado2() == extremoDer) {
+                contadorDer++;
+            }
+        }
+        return contadorIzq >= umbral && contadorDer >= umbral;
     }
 
 }

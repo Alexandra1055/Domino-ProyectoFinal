@@ -62,6 +62,24 @@ public abstract class JuegoDomino implements Serializable {
         return jugadores;
     }
 
+    public Mesa getMesa() {
+        return mesa;
+    }
+
+    public Jugador getJugadorActual() {
+        return jugadores.get(turnoActual);
+    }
+
+    public void setTurnoActual(int turno) {
+        if (turno >= 0 && turno < jugadores.size()) {
+            this.turnoActual = turno;
+        }
+    }
+
+    public int getTurnoActual() {
+        return turnoActual;
+    }
+
     public void jugarTurno() {
         Jugador jugadorActual = jugadores.get(turnoActual);
         jugadorActual.imprimirFichas();
@@ -88,6 +106,7 @@ public abstract class JuegoDomino implements Serializable {
                     if (lado == 'I') {
                         if (mesa.puedeColocarseIzquierda(ficha)) {
                             mesa.agregarFichaIzquierda(ficha);
+                            jugadorActual.eliminarFicha(ficha);
                             System.out.println("Ficha colocada a la izquierda de la mesa.");
                             intentoExitoso = true;
                         } else {
@@ -96,6 +115,7 @@ public abstract class JuegoDomino implements Serializable {
                     } else {
                         if (mesa.puedeColocarseDerecha(ficha)) {
                             mesa.agregarFichaDerecha(ficha);
+                            jugadorActual.eliminarFicha(ficha);
                             System.out.println("Ficha colocada a la derecha de la mesa.");
                             intentoExitoso = true;
                         } else {
@@ -112,6 +132,7 @@ public abstract class JuegoDomino implements Serializable {
                 if (lado == 'I') {
                     if (mesa.puedeColocarseIzquierda(ficha)) {
                         mesa.agregarFichaIzquierda(ficha);
+                        jugadorActual.eliminarFicha(ficha);
                         System.out.println("Ficha colocada a la izquierda de la mesa.");
                         intentoExitoso = true;
                     } else {
@@ -120,6 +141,7 @@ public abstract class JuegoDomino implements Serializable {
                 } else {
                     if (mesa.puedeColocarseDerecha(ficha)) {
                         mesa.agregarFichaDerecha(ficha);
+                        jugadorActual.eliminarFicha(ficha);
                         System.out.println("Ficha colocada a la derecha de la mesa.");
                         intentoExitoso = true;
                     } else {
@@ -157,7 +179,7 @@ public abstract class JuegoDomino implements Serializable {
         return index;
     }
 
-    private char pedirOpcion(String mensaje, String opcionesValidas) {
+    public char pedirOpcion(String mensaje, String opcionesValidas) {
         char opcion = ' ';
         boolean valido = false;
         while (!valido) {

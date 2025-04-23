@@ -44,4 +44,8 @@ public enum Pais {
     public String getReglaEspecial() {
         return reglaEspecial;
     }
+
+    public boolean tieneObjetivo() {
+        return puntuacionGanadora > 0;
+    }
 }
