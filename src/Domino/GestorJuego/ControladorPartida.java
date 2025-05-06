@@ -29,18 +29,23 @@ public class ControladorPartida {
         Modalidad modalidad = seleccionarModalidad();
         int mejorPuntuacion = usuario.getPuntuacionMaxima(pais);
 
-        JuegoDomino partidaGuardada = partidaDAO.cargarPartida(usuario.getNombre(), pais.ordinal() + 1);
+        int ipais = pais.ordinal() + 1;
+        int imod = modalidad.ordinal() + 1;
+        JuegoDomino partidaGuardada =
+                partidaDAO.cargarPartida(usuario.getNombre(), ipais, imod);
 
         if (partidaGuardada != null) {
-            String respuesta = Input.leerLinea("Hay una partida guardada de " + pais.getTitulo() + ". ¿Continuar? (S/N): ");
+            String respuesta = Input.leerLinea(
+                    "Hay una partida guardada de " + pais.getTitulo() + ". ¿Continuar? (S/N): ");
             if (respuesta.equalsIgnoreCase("S")) {
-                reanudarPartida(partidaGuardada, pais, mejorPuntuacion);
+                reanudarPartida(partidaGuardada, pais, modalidad, mejorPuntuacion);
                 return;
             }
         }
 
         nuevaPartida(pais, modalidad, mejorPuntuacion);
     }
+
 
     private void nuevaPartida(Pais pais, Modalidad modalidad, int mejorPuntuacion) {
         int objetivo = pais.getPuntuacionGanadora();
@@ -62,7 +67,7 @@ public class ControladorPartida {
 
             bucleTurnos(partida, pais);
 
-            partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, partida);
+            partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, modalidad.ordinal() + 1, partida);
 
             UtilidadesJuego.procesarResultadoDePartida(partida, pais, mejorPuntuacion, usuario, usuarioDAO);
 
@@ -77,12 +82,12 @@ public class ControladorPartida {
         Output.mostrarConSalto("Fin en " + pais.getTitulo() + ". Máxima: " + usuario.getPuntuacionMaxima(pais));
     }
 
-    private void reanudarPartida(JuegoDomino partida, Pais pais, int mejorPuntuacion) {
-        Output.mostrarConSalto("Reanudando partida de " + pais.getTitulo());
+    private void reanudarPartida(JuegoDomino partida, Pais pais, Modalidad modalidad, int mejorPuntuacion) {
+        Output.mostrarConSalto("Reanudando partida de " + pais.getTitulo() + " / " + modalidad.getTitulo());
 
         bucleTurnos(partida, pais);
 
-        partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, partida);
+        partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal() + 1,modalidad.ordinal() + 1, partida);
 
         UtilidadesJuego.procesarResultadoDePartida(partida, pais, mejorPuntuacion, usuario, usuarioDAO);
 

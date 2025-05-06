@@ -16,19 +16,21 @@ public class PartidaDAO {
         }
     } // creo una carpeta para guardar las partidas
 
-    public void guardarPartida(String nombreUsuario, int indicePais, JuegoDomino partida) {
-        String nombreFichero = nombreUsuario + "_" + indicePais + ".ser";
+    public void guardarPartida(String nombreUsuario, int indicePais, int indiceModalidad, JuegoDomino partida) {
+        String nombreFichero = nombreUsuario + "_" + indicePais + "_" + indiceModalidad + ".ser";
         File archivo = new File(RUTA_PARTIDAS, nombreFichero);
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
             oos.writeObject(partida);
-            System.out.println("Partida de " + nombreUsuario + " para país " + indicePais + " guardada.");
+            System.out.println("Partida guardada: "
+                    + nombreUsuario + " / país " + indicePais
+                    + " / modalidad " + indiceModalidad);
         } catch (IOException e) {
             System.err.println("Error al guardar partida: " + e.getMessage());
         }
     } // serializa
 
-    public JuegoDomino cargarPartida(String nombreUsuario, int indicePais) {
-        String nombreFichero = nombreUsuario + "_" + indicePais + ".ser";
+    public JuegoDomino cargarPartida(String nombreUsuario, int indicePais, int indiceModalidad) {
+        String nombreFichero = nombreUsuario + "_" + indicePais + "_" + indiceModalidad + ".ser";
         File archivo = new File(RUTA_PARTIDAS, nombreFichero);
         if (!archivo.exists()) {
             return null;
@@ -44,20 +46,28 @@ public class PartidaDAO {
     public List<Integer> listaPartidasUsuario(String nombreUsuario) {
         File carpeta = new File(RUTA_PARTIDAS);
         File[] archivos = carpeta.listFiles();
-        List<Integer> indices = new ArrayList<Integer>();
+        List<Integer> codigos = new ArrayList<Integer>();
         if (archivos != null) {
             for (int i = 0; i < archivos.length; i++) {
                 String nombre = archivos[i].getName();
                 if (nombre.startsWith(nombreUsuario + "_") && nombre.endsWith(".ser")) {
-                    String parte = nombre.substring(nombreUsuario.length() + 1, nombre.length() - 4);
-                    try {
-                        indices.add(Integer.parseInt(parte));
-                    } catch (NumberFormatException ignored) {
+                    String parte = nombre.substring(
+                            (nombreUsuario + "_").length(),
+                            nombre.length() - 4
+                    );
+                    String[] trozos = parte.split("_");
+                    if (trozos.length == 2) {
+                        try {
+                            int pais = Integer.parseInt(trozos[0]);
+                            int mod = Integer.parseInt(trozos[1]);
+                            codigos.add(pais * 10 + mod);
+                        } catch (NumberFormatException ignored) {
+                        }
                     }
                 }
             }
         }
-        return indices;
+        return codigos;
     }// listamos las partidas guardadas
 
 }

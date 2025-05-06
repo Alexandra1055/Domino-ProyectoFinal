@@ -67,34 +67,41 @@ public class Display {
     }
 
     private void cargarPartida() {
-        List<Integer> listaIndices = partidaDAO.listaPartidasUsuario(usuario.getNombre());
-        if (listaIndices.isEmpty()) {
+        List<Integer> listaCodigos = partidaDAO.listaPartidasUsuario(usuario.getNombre());
+        if (listaCodigos.isEmpty()) {
             Output.mostrarConSalto("No tienes ninguna partida guardada.");
             return;
         }
 
         Output.mostrarConSalto("Partidas guardadas para " + usuario.getNombre() + ":");
 
-        for (int i = 0; i < listaIndices.size(); i++) {
-            int indicePais = listaIndices.get(i);
-            Pais pais = Pais.values()[indicePais];
-            Output.mostrarConSalto((i + 1) + "- " + pais.getTitulo());
+        for (int i = 0; i < listaCodigos.size(); i++) {
+            int codigo = listaCodigos.get(i);
+            int paisCod = codigo / 10;
+            int modCod  = codigo % 10;
+            Pais pais = Pais.values()[paisCod - 1];
+            Modalidad mod = Modalidad.values()[modCod - 1];
+            Output.mostrarConSalto((i + 1) + "- "
+                    + pais.getTitulo() + " / " + mod.getTitulo());
         }
 
-        int seleccion = Input.leerNumeroEntero("Selecciona la partida por número (1-" + listaIndices.size() + "): ") - 1;
+        int seleccion = Input.leerNumeroEntero("Selecciona la partida por número (1-" + listaCodigos.size() + "): ") - 1;
 
-        if (seleccion < 0 || seleccion >= listaIndices.size()) {
+        if (seleccion < 0 || seleccion >= listaCodigos.size()) {
             Output.error("Selección inválida.");
             return;
         }
 
-        int indicePais = listaIndices.get(seleccion);
-        JuegoDomino partida = partidaDAO.cargarPartida(usuario.getNombre(), indicePais);
+        int indicePais = listaCodigos.get(seleccion);
+        int elegido = listaCodigos.get(seleccion);
+        int paisCod = elegido / 10;
+        int modCod  = elegido % 10;
+        JuegoDomino partida = partidaDAO.cargarPartida(usuario.getNombre(), paisCod, modCod);
 
         if (partida == null) {
-            Output.error("Error al cargar la partida de " + Pais.values()[indicePais].getTitulo());
+            Output.error("Error al cargar la partida de " + Pais.values()[paisCod - 1].getTitulo()+ " / " + Modalidad.values()[modCod - 1].getTitulo());
         } else {
-            Output.mostrarConSalto("Partida de " + Pais.values()[indicePais].getTitulo() + " cargada correctamente.");
+            Output.mostrarConSalto("Partida de " + Pais.values()[paisCod - 1].getTitulo() + " / " + Modalidad.values()[modCod - 1].getTitulo() + " cargada correctamente");
             partida.iniciarPartida();
         }
     }
