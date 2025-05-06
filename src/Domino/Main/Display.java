@@ -96,14 +96,18 @@ public class Display {
         int elegido = listaCodigos.get(seleccion);
         int paisCod = elegido / 10;
         int modCod  = elegido % 10;
+        Pais pais = Pais.values()[paisCod - 1];
+        Modalidad mod = Modalidad.values()[modCod - 1];
+
         JuegoDomino partida = partidaDAO.cargarPartida(usuario.getNombre(), paisCod, modCod);
 
         if (partida == null) {
-            Output.error("Error al cargar la partida de " + Pais.values()[paisCod - 1].getTitulo()+ " / " + Modalidad.values()[modCod - 1].getTitulo());
+            Output.error("Error al cargar la partida de " + pais.getTitulo() + " / " + mod.getTitulo());
         } else {
-            Output.mostrarConSalto("Partida de " + Pais.values()[paisCod - 1].getTitulo() + " / " + Modalidad.values()[modCod - 1].getTitulo() + " cargada correctamente");
-            partida.iniciarPartida();
+            Output.mostrarConSalto("Partida de " + pais.getTitulo() + " / " + mod.getTitulo() + " cargada correctamente");
         }
+        ControladorPartida controlador = new ControladorPartida(usuario,usuarioDAO,partidaDAO);
+        controlador.reanudarPartidaExistente(partida,pais,mod);
     }
 
 }

@@ -37,11 +37,44 @@ public class UtilidadesJuego {
     }
 
     public static void registrarJugadores(JuegoDomino partida, String nombreUsuario) {
-        partida.agregarJugador(new Jugador(nombreUsuario));
+        if (partida instanceof PartidaParejas) {
+            PartidaParejas pp = (PartidaParejas) partida;
+            Equipo equipo1 = new Equipo("Equipo 1");
+            Equipo equipo2 = new Equipo("Equipo 2");
 
-        for (int i = 2; i <= 4; i++) {
-            partida.agregarJugador(new Jugador("Jugador " + i));
+            Jugador jUsuario = new Jugador(nombreUsuario);
+            Jugador j3 = new Jugador("Jugador 3");
+            equipo1.agregarJugador(jUsuario);
+            equipo1.agregarJugador(j3);
+
+            Jugador j2 = new Jugador("Jugador 2");
+            Jugador j4 = new Jugador("Jugador 4");
+            equipo2.agregarJugador(j2);
+            equipo2.agregarJugador(j4);
+
+            pp.agregarEquipo(equipo1);
+            pp.agregarEquipo(equipo2);
+
+            int maxJug = Math.max(
+                    equipo1.getJugadores().size(),
+                    equipo2.getJugadores().size()
+            );
+            for (int idx = 0; idx < maxJug; idx++) {
+                if (idx < equipo1.getJugadores().size()) {
+                    pp.agregarJugador(equipo1.getJugadores().get(idx));
+                }
+                if (idx < equipo2.getJugadores().size()) {
+                    pp.agregarJugador(equipo2.getJugadores().get(idx));
+                }
+            }
+            // Creamos dos equipos con dos jugadores cada uno
+        } else {
+            partida.agregarJugador(new Jugador(nombreUsuario));
+            for (int i = 2; i <= 4; i++) {
+                partida.agregarJugador(new Jugador("Jugador " + i));
+            }// Partida individual
         }
+
     }
 
     public static void procesarResultadoDePartida(JuegoDomino partida, Pais paisSeleccionado, int mejorPuntuacionActual, Usuario usuario, UsuarioDAO usuarioDAO){
@@ -60,6 +93,7 @@ public class UtilidadesJuego {
                 Output.mostrarConSalto("Hubo bloqueo: \n - Ganador " + ganador.getNombre() + " \n - Puntos: " + puntosObtenidos);
             }else {
                 Output.mostrarConSalto("Hubo bloqueo, pero ningún jugador recibe puntos");
+                return;
             }
         }else {
             for (int i = 0; i < partida.getJugadores().size(); i++) {

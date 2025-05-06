@@ -7,11 +7,11 @@ import Domino.ENUMS.Pais;
 import Domino.Factory.ModalidadFactory;
 import Domino.IO.Input;
 import Domino.IO.Output;
-import Domino.Juego.JuegoDomino;
-import Domino.Juego.Jugador;
-import Domino.Juego.Mesa;
-import Domino.Juego.Usuario;
+import Domino.Juego.*;
+import Domino.Reglas.ReglasConStock;
 import Domino.Reglas.ReglasDomino;
+
+import java.util.List;
 
 public class ControladorPartida {
     private Usuario usuario;
@@ -31,14 +31,12 @@ public class ControladorPartida {
 
         int ipais = pais.ordinal() + 1;
         int imod = modalidad.ordinal() + 1;
-        JuegoDomino partidaGuardada =
-                partidaDAO.cargarPartida(usuario.getNombre(), ipais, imod);
+        JuegoDomino partidaGuardada = partidaDAO.cargarPartida(usuario.getNombre(), ipais, imod);
 
         if (partidaGuardada != null) {
-            String respuesta = Input.leerLinea(
-                    "Hay una partida guardada de " + pais.getTitulo() + ". ¿Continuar? (S/N): ");
+            String respuesta = Input.leerLinea("Hay una partida guardada de " + pais.getTitulo()  + " / " + modalidad.getTitulo() + ". ¿Continuar? (S/N): ");
             if (respuesta.equalsIgnoreCase("S")) {
-                reanudarPartida(partidaGuardada, pais, modalidad, mejorPuntuacion);
+                reanudarPartidaExistente(partidaGuardada, pais, modalidad);
                 return;
             }
         }
@@ -46,6 +44,42 @@ public class ControladorPartida {
         nuevaPartida(pais, modalidad, mejorPuntuacion);
     }
 
+    public void reanudarPartidaExistente(JuegoDomino partida, Pais pais, Modalidad modalidad) {
+        Mesa mesa = partida.getMesa();
+        if (partida.getJugadores().isEmpty() && partida instanceof PartidaParejas) {
+            UtilidadesJuego.registrarJugadores(partida, usuario.getNombre());
+        }
+
+        Output.mostrarConSalto("Estado actual de la mesa:");
+        mesa.imprimirMesa();
+
+        Output.mostrarConSalto("Fichas en tu mano:");
+        List<Jugador> jugadores = partida.getJugadores();
+        for (int i = 0; i < jugadores.size(); i++) {
+            Jugador j = jugadores.get(i);
+            if (j.getNombre().equals(usuario.getNombre())) {
+                Output.mostrarConSalto(j.getFichas().toString());
+                break;
+            }
+        }
+
+        String opcion = Input.leerLinea("¿Continuar partida o Salir al menú? (C/S): ");
+        if (opcion.equalsIgnoreCase("S")) {
+            partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, modalidad.ordinal()+1, partida);
+            return;
+        }
+
+        ReglasDomino reglas = partida.getReglas();
+        if (!reglas.sePuedeJugar(partida.getJugadores()) || mesa.estaBloqueado(pais)) {
+            int mejorPuntuacion = usuario.getPuntuacionMaxima(pais);
+            nuevaPartida(pais, modalidad, mejorPuntuacion);
+            return;
+        }
+
+        int mejor = usuario.getPuntuacionMaxima(pais);
+        bucleTurnos(partida, pais, modalidad, mejor);
+
+    }
 
     private void nuevaPartida(Pais pais, Modalidad modalidad, int mejorPuntuacion) {
         int objetivo = pais.getPuntuacionGanadora();
@@ -65,11 +99,10 @@ public class ControladorPartida {
             Output.mostrarConSalto("Empieza: " + primero.getNombre());
             partida.proximoTurno();
 
-            bucleTurnos(partida, pais);
-
-            partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, modalidad.ordinal() + 1, partida);
+            bucleTurnos(partida, pais, modalidad, mejorPuntuacion);
 
             UtilidadesJuego.procesarResultadoDePartida(partida, pais, mejorPuntuacion, usuario, usuarioDAO);
+            mejorPuntuacion = usuario.getPuntuacionMaxima(pais);
 
             String pregunta;
             if (tieneObjetivo) {
@@ -80,39 +113,87 @@ public class ControladorPartida {
             continuar = Input.leerLinea(pregunta).equalsIgnoreCase("S");
         }
         Output.mostrarConSalto("Fin en " + pais.getTitulo() + ". Máxima: " + usuario.getPuntuacionMaxima(pais));
+        partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal() + 1, modalidad.ordinal() + 1, ModalidadFactory.crearPartida(pais, modalidad));
     }
 
-    private void reanudarPartida(JuegoDomino partida, Pais pais, Modalidad modalidad, int mejorPuntuacion) {
-        Output.mostrarConSalto("Reanudando partida de " + pais.getTitulo() + " / " + modalidad.getTitulo());
-
-        bucleTurnos(partida, pais);
-
-        partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal() + 1,modalidad.ordinal() + 1, partida);
-
-        UtilidadesJuego.procesarResultadoDePartida(partida, pais, mejorPuntuacion, usuario, usuarioDAO);
-
-    }
-
-    private void bucleTurnos(JuegoDomino partida, Pais pais) {
+    private void bucleTurnos(JuegoDomino partida, Pais pais, Modalidad modalidad, int mejorPuntuacion) {
         Mesa mesa = partida.getMesa();
         ReglasDomino reglas = partida.getReglas();
 
+        if (!reglas.sePuedeJugar(partida.getJugadores()) || mesa.estaBloqueado(pais)) {
+            String respuesta = Input.leerLinea("La partida está finalizada o bloqueada. ¿Continuar (C) o Salir (S)? ");
+
+            if (respuesta.equalsIgnoreCase("S")) {
+                partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal() + 1, modalidad.ordinal() + 1, partida);
+                return;
+            }
+        }
+
         while (reglas.sePuedeJugar(partida.getJugadores()) && !mesa.estaBloqueado(pais)) {
             mesa.imprimirMesa();
+
             Jugador turno = partida.getJugadorActual();
 
             if (turno.getNombre().equals(usuario.getNombre())) {
-                partida.jugarTurno();
+                String respuesta = Input.leerLinea("¿Quieres guardar la partida antes de tu turno? (S/N): ");
+                if (respuesta.equalsIgnoreCase("S")) {
+                    partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal() + 1, modalidad.ordinal() + 1, partida);
+                    return;
+                }
+                if (!mesa.esJugadaValida(turno) && reglas instanceof ReglasConStock) {
+                    if (((ReglasConStock) reglas).puedeRobarFicha(turno)) {
+                        Output.mostrarConSalto("Has robado una ficha. Tu mano ahora es:");
+                        turno.imprimirFichas(mesa);
+                    } else {
+                        Output.mostrarConSalto("No hay fichas en el stock. Pasas turno.");
+                        partida.proximoTurno();
+                        continue;
+                    }
+                }
+                turno.imprimirFichas(mesa);
+                partida.proximoTurno();
+
+                int puntosAhora = calcularPuntosUsuario(partida);
+                if (puntosAhora > mejorPuntuacion) {
+                    Output.mostrarConSalto("¡Has superado tu récord: " + puntosAhora + " puntos!");
+                    String opcion = Input.leerLinea("¿Seguir (S) o Salir (N)? ");
+                    if (opcion.equalsIgnoreCase("N")) {
+                        partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, modalidad.ordinal()+1, partida);
+                        return;
+                    }
+                    mejorPuntuacion = puntosAhora;
+                }
+
             } else {
                 UtilidadesJuego.jugarTurnoAutomatico(partida);
             }
 
-            if (reglas.sePuedeJugar(partida.getJugadores())) {
-                partida.proximoTurno();
-            }
+            partida.proximoTurno();
         }
+        partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, modalidad.ordinal()+1, partida);
     }
 
+    private int calcularPuntosUsuario(JuegoDomino partida) {
+        List<Jugador> jugadores = partida.getJugadores();
+
+        for (int i = 0; i < jugadores.size(); i++) {
+            Jugador j = jugadores.get(i);
+
+            if (j.getNombre().equals(usuario.getNombre())) {
+                int suma = 0;
+
+                List<FichaDomino> fichas = j.getFichas();
+                for (int k = 0; k < fichas.size(); k++) {
+                    FichaDomino f = fichas.get(k);
+                    suma += f.getLado1() + f.getLado2();
+                }
+
+                return suma;
+            }
+        }
+
+        return 0;
+    }
 
     private Pais seleccionarPais() {
         Output.mostrarConSalto("Selecciona un país:");

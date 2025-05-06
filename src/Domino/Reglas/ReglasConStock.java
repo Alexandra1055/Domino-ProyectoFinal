@@ -3,12 +3,13 @@ package Domino.Reglas;
 import Domino.Juego.MazoDomino;
 import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ReglasConStock implements ReglasDomino {
     protected MazoDomino mazo;
-    protected ArrayList<FichaDomino> stock;
+    protected List<FichaDomino> stock;
 
     public ReglasConStock() {
         this.mazo = new MazoDomino();

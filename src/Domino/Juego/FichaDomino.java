@@ -3,6 +3,7 @@ package Domino.Juego;
 import java.io.Serializable;
 
 public class FichaDomino implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int lado1;
     private int lado2;
 
