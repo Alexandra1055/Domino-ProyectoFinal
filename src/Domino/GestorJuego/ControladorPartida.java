@@ -17,6 +17,7 @@ public class ControladorPartida {
     private Usuario usuario;
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
     private PartidaDAO partidaDAO = new PartidaDAO();
+    private boolean retornoPorGuardado = false;
 
     public ControladorPartida(Usuario usuario, UsuarioDAO usuarioDAO, PartidaDAO partidaDAO){
         this.usuario = usuario;
@@ -79,6 +80,12 @@ public class ControladorPartida {
         int mejor = usuario.getPuntuacionMaxima(pais);
         bucleTurnos(partida, pais, modalidad, mejor);
 
+        if (retornoPorGuardado) {
+            retornoPorGuardado = false;
+            return;
+        }
+
+        UtilidadesJuego.procesarResultadoDePartida(partida, pais, usuario.getPuntuacionMaxima(pais), usuario, usuarioDAO);
     }
 
     private void nuevaPartida(Pais pais, Modalidad modalidad, int mejorPuntuacion) {
@@ -100,6 +107,11 @@ public class ControladorPartida {
             partida.proximoTurno();
 
             bucleTurnos(partida, pais, modalidad, mejorPuntuacion);
+
+            if (retornoPorGuardado) {
+                retornoPorGuardado = false;
+                return;
+            }
 
             UtilidadesJuego.procesarResultadoDePartida(partida, pais, mejorPuntuacion, usuario, usuarioDAO);
             mejorPuntuacion = usuario.getPuntuacionMaxima(pais);
@@ -138,6 +150,7 @@ public class ControladorPartida {
                 String respuesta = Input.leerLinea("¿Quieres guardar la partida antes de tu turno? (S/N): ");
                 if (respuesta.equalsIgnoreCase("S")) {
                     partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal() + 1, modalidad.ordinal() + 1, partida);
+                    retornoPorGuardado = true;
                     return;
                 }
                 if (!mesa.esJugadaValida(turno) && reglas instanceof ReglasConStock) {
@@ -151,48 +164,15 @@ public class ControladorPartida {
                     }
                 }
                 turno.imprimirFichas(mesa);
+                partida.jugarTurno();
                 partida.proximoTurno();
-
-                int puntosAhora = calcularPuntosUsuario(partida);
-                if (puntosAhora > mejorPuntuacion) {
-                    Output.mostrarConSalto("¡Has superado tu récord: " + puntosAhora + " puntos!");
-                    String opcion = Input.leerLinea("¿Seguir (S) o Salir (N)? ");
-                    if (opcion.equalsIgnoreCase("N")) {
-                        partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, modalidad.ordinal()+1, partida);
-                        return;
-                    }
-                    mejorPuntuacion = puntosAhora;
-                }
 
             } else {
                 UtilidadesJuego.jugarTurnoAutomatico(partida);
+                partida.proximoTurno();
             }
-
-            partida.proximoTurno();
         }
         partidaDAO.guardarPartida(usuario.getNombre(), pais.ordinal()+1, modalidad.ordinal()+1, partida);
-    }
-
-    private int calcularPuntosUsuario(JuegoDomino partida) {
-        List<Jugador> jugadores = partida.getJugadores();
-
-        for (int i = 0; i < jugadores.size(); i++) {
-            Jugador j = jugadores.get(i);
-
-            if (j.getNombre().equals(usuario.getNombre())) {
-                int suma = 0;
-
-                List<FichaDomino> fichas = j.getFichas();
-                for (int k = 0; k < fichas.size(); k++) {
-                    FichaDomino f = fichas.get(k);
-                    suma += f.getLado1() + f.getLado2();
-                }
-
-                return suma;
-            }
-        }
-
-        return 0;
     }
 
     private Pais seleccionarPais() {

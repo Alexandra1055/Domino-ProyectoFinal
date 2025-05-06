@@ -6,6 +6,8 @@ import Domino.IO.Output;
 import Domino.Reglas.ReglasConStock;
 import Domino.Reglas.ReglasDomino;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -153,5 +155,11 @@ public abstract class JuegoDomino implements Serializable {
             }
         }
         return opcion;
+    }
+
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.imprimir = new Scanner(System.in);
     }
 }
