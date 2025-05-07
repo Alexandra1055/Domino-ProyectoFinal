@@ -153,17 +153,27 @@ public class ControladorPartida {
                     retornoPorGuardado = true;
                     return;
                 }
-                if (!mesa.esJugadaValida(turno) && reglas instanceof ReglasConStock) {
-                    if (((ReglasConStock) reglas).puedeRobarFicha(turno)) {
-                        Output.mostrarConSalto("Has robado una ficha. Tu mano ahora es:");
-                        turno.imprimirFichas(mesa);
+
+                if (!mesa.esJugadaValida(turno)){
+                    if (reglas instanceof ReglasConStock) {
+                        ReglasConStock rc = (ReglasConStock) reglas;
+                        if (rc.puedeRobarFicha(turno)) {
+                            Output.mostrarConSalto("Has robado una ficha. Tu mano ahora es:");
+                            turno.imprimirFichas(mesa);
+                        } else {
+                            Output.mostrarConSalto("No hay fichas en el stock. Pasas turno.");
+                            partida.proximoTurno();
+                            continue;
+                        }//con stock
                     } else {
-                        Output.mostrarConSalto("No hay fichas en el stock. Pasas turno.");
+                        Output.mostrarConSalto("No tienes jugadas posibles. Pasas turno.");
                         partida.proximoTurno();
                         continue;
-                    }
+                    }//sin stock
                 }
                 turno.imprimirFichas(mesa);
+
+
                 partida.jugarTurno();
                 partida.proximoTurno();
 
