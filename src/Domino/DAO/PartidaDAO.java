@@ -21,9 +21,8 @@ public class PartidaDAO {
         File archivo = new File(RUTA_PARTIDAS, nombreFichero);
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
             oos.writeObject(partida);
-            System.out.println("Partida guardada: "
-                    + nombreUsuario + " / país " + indicePais
-                    + " / modalidad " + indiceModalidad);
+            System.out.println("Partida guardada para: " + nombreUsuario + "\n País " + indicePais
+                    + " / Modalidad " + indiceModalidad);
         } catch (IOException e) {
             System.err.println("Error al guardar partida: " + e.getMessage());
         }

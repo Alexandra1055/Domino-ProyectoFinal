@@ -172,8 +172,6 @@ public class ControladorPartida {
                     }//sin stock
                 }
                 turno.imprimirFichas(mesa);
-
-
                 partida.jugarTurno();
                 partida.proximoTurno();
 

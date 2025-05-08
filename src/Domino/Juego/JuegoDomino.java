@@ -92,7 +92,6 @@ public abstract class JuegoDomino implements Serializable {
 
         boolean jugadaHecha = false;
         while (!jugadaHecha) {
-            jugadorActual.imprimirFichas(mesa);
             int index = pedirIndexFicha(jugadorActual);
             FichaDomino ficha = jugadorActual.getFichas().get(index);
 
@@ -157,8 +156,7 @@ public abstract class JuegoDomino implements Serializable {
         return opcion;
     }
 
-    private void readObject(ObjectInputStream in)
-            throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.imprimir = new Scanner(System.in);
     }

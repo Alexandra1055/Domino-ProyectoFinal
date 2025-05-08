@@ -55,10 +55,7 @@ public class UtilidadesJuego {
             pp.agregarEquipo(equipo1);
             pp.agregarEquipo(equipo2);
 
-            int maxJug = Math.max(
-                    equipo1.getJugadores().size(),
-                    equipo2.getJugadores().size()
-            );
+            int maxJug = Math.max(equipo1.getJugadores().size(), equipo2.getJugadores().size());
             for (int idx = 0; idx < maxJug; idx++) {
                 if (idx < equipo1.getJugadores().size()) {
                     pp.agregarJugador(equipo1.getJugadores().get(idx));
@@ -77,61 +74,94 @@ public class UtilidadesJuego {
 
     }
 
-    public static void procesarResultadoDePartida(JuegoDomino partida, Pais paisSeleccionado, int mejorPuntuacionActual, Usuario usuario, UsuarioDAO usuarioDAO){
+    public static void procesarResultadoDePartida(JuegoDomino partida, Pais paisSeleccionado, int mejorPuntuacionActual, Usuario usuario, UsuarioDAO usuarioDAO) {
         ReglasDomino reglas = partida.getReglas();
         Mesa mesa = partida.getMesa();
 
         boolean hayBloqueo = reglas.aplicaBloqueo(mesa, paisSeleccionado);
-        Jugador ganador = null;
-        int puntosObtenidos;
+        String mensajeResultado = "";
+        int puntuacionTotal = 0;
 
-        if (hayBloqueo){
-            ganador = reglas.determinarGanadorBloqueo(partida.getJugadores(), mesa, paisSeleccionado, partida.getTurnoActual());
-            puntosObtenidos = reglas.puntosBloqueo();
+        if (partida instanceof PartidaParejas) {
+            PartidaParejas partidaParejas = (PartidaParejas) partida;
+            Equipo equipoGanador = null;
+            Equipo equipoPerdedor = null;
 
-            if (ganador != null){
-                Output.mostrarConSalto("Hubo bloqueo: \n - Ganador " + ganador.getNombre() + " \n - Puntos: " + puntosObtenidos);
-            }else {
-                Output.mostrarConSalto("Hubo bloqueo, pero ningún jugador recibe puntos");
-                return;
-            }
-        }else {
-            for (int i = 0; i < partida.getJugadores().size(); i++) {
-                Jugador juegador = partida.getJugadores().get(i);
-
-                if (juegador.getFichas().isEmpty()){
-                    ganador = juegador;
-                    break;
+            if (hayBloqueo) {
+                Jugador ganadorBloqueo = reglas.determinarGanadorBloqueo(partida.getJugadores(), mesa, paisSeleccionado, partida.getTurnoActual());
+                for (int i = 0; i < partidaParejas.getEquipos().size(); i++) {
+                    Equipo equipo = partidaParejas.getEquipos().get(i);
+                    for (int j = 0; j < equipo.getJugadores().size(); j++) {
+                        if (equipo.getJugadores().get(j).equals(ganadorBloqueo)) {
+                            equipoGanador = equipo;
+                        }
+                    }
                 }
-            }// para cuando la mano esta vacia
-
-            if (ganador == null){
-                int sumaMinima= Integer.MAX_VALUE;
-
+                puntuacionTotal = reglas.puntosBloqueo();
+            } else {
+                Jugador ganadorMano = null;
                 for (int i = 0; i < partida.getJugadores().size(); i++) {
-                    Jugador jugador = partida.getJugadores().get(i);
-                    int suma = 0;
-
-                    for (int j = 0; j < jugador.getFichas().size(); j++) {
-                        suma += jugador.getFichas().get(j).getLado1() + jugador.getFichas().get(j).getLado2();
-                    }
-
-                    if (suma < sumaMinima){
-                        sumaMinima = suma;
-                        ganador = jugador;
+                    Jugador jugadorActual = partida.getJugadores().get(i);
+                    if (jugadorActual.getFichas().isEmpty()) {
+                        ganadorMano = jugadorActual;
+                        break;
                     }
                 }
-            }// si no hubiera nadie con la mano vacia, se suman los puntos de las fichas que quedan
 
-            puntosObtenidos = reglas.calcularPuntuacion(partida.getJugadores());
-            Output.mostrarConSalto("Ha ganado: " + ganador.getNombre() + " con " + puntosObtenidos + " puntos");
+                for (int i = 0; i < partidaParejas.getEquipos().size(); i++) {
+                    Equipo equipo = partidaParejas.getEquipos().get(i);
+                    if (equipo.getJugadores().contains(ganadorMano)) {
+                        equipoGanador = equipo;
+                    } else {
+                        equipoPerdedor = equipo;
+                    }
+                }
+
+                for (int i = 0; i < equipoPerdedor.getJugadores().size(); i++) {
+                    Jugador j = equipoPerdedor.getJugadores().get(i);
+                    for (int k = 0; k < j.getFichas().size(); k++) {
+                        FichaDomino f = j.getFichas().get(k);
+                        puntuacionTotal += f.getLado1() + f.getLado2();
+                    }
+                }
+
+                if (reglas instanceof ReglasConStock) {
+                    ReglasConStock reglasStock = (ReglasConStock) reglas;
+                    for (int i = 0; i < reglasStock.getStock().size(); i++) {
+                        FichaDomino ficha = reglasStock.getStock().get(i);
+                        puntuacionTotal += ficha.getLado1() + ficha.getLado2();
+                    }
+                }
+            }
+            int puntosPorJugador = puntuacionTotal / 2;
+            String nombres = equipoGanador.getJugadores().get(0).getNombre()
+                    + " y " + equipoGanador.getJugadores().get(1).getNombre();
+            mensajeResultado = "Ha ganado " + equipoGanador.getNombre()
+                    + ", formado por " + nombres
+                    + " con " + puntuacionTotal + " puntos (cada uno obtiene " + puntosPorJugador + " puntos)";
+
+        } else {
+            Jugador ganador = null;
+            if (hayBloqueo) {
+                ganador = reglas.determinarGanadorBloqueo(partida.getJugadores(), mesa, paisSeleccionado, partida.getTurnoActual());
+                puntuacionTotal = reglas.puntosBloqueo();
+            } else {
+                for (int i = 0; i < partida.getJugadores().size(); i++) {
+                    Jugador j = partida.getJugadores().get(i);
+                    if (j.getFichas().isEmpty()) {
+                        ganador = j;
+                        break;
+                    }
+                }
+                puntuacionTotal = reglas.calcularPuntuacion(partida.getJugadores());
+            }
+            mensajeResultado = "Ha ganado: " + ganador.getNombre() + " con " + puntuacionTotal + " puntos";
+            if (ganador.getNombre().equals(usuario.getNombre()) && puntuacionTotal > mejorPuntuacionActual) {
+                usuario.actualizarPuntuacion(paisSeleccionado, puntuacionTotal);
+                usuarioDAO.guardarUsuario(usuario);
+                Output.mostrarConSalto("Nuevo récord en " + paisSeleccionado.getTitulo());
+            }
         }
-
-        if (ganador.getNombre().equals(usuario.getNombre()) && puntosObtenidos > mejorPuntuacionActual){
-            usuario.actualizarPuntuacion(paisSeleccionado, puntosObtenidos);
-            usuarioDAO.guardarUsuario(usuario);
-
-            Output.mostrarConSalto("Nuevo récord en " + paisSeleccionado.getTitulo());
-        }
+        Output.mostrarConSalto(mensajeResultado);
     }
 }

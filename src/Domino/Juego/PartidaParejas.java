@@ -61,6 +61,10 @@ public class PartidaParejas extends JuegoDomino implements Serializable {
 
     }
 
+    public ArrayList<Equipo> getEquipos() {
+        return equipos;
+    }
+
     @Override
     public void mostrarEstado() {
         for (int i = 0; i < equipos.size(); i++) {
