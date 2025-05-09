@@ -28,6 +28,16 @@ public class ControladorPartida {
     public void iniciarPartidaNueva(){
         Pais pais = seleccionarPais();
         Modalidad modalidad = seleccionarModalidad();
+
+        Output.mostrarConSalto("Has seleccionado el país " + pais.getTitulo() + " con modalidad " + modalidad.getTitulo());
+        Output.mostrarConSalto("Reglas: " + pais.getReglaEspecial());
+        Output.mostrarConSalto("Este Dominó consta de " + pais.getTotalFichas() + " fichas");
+        if (pais.tieneObjetivo()) {
+            Output.mostrarConSalto("Puntuación Ganadora: " + pais.getPuntuacionGanadora() + " puntos");
+        } else {
+            Output.mostrarConSalto("Puntuación Ganadora: Sin límite");
+        }
+
         int mejorPuntuacion = usuario.getPuntuacionMaxima(pais);
 
         int ipais = pais.ordinal() + 1;
@@ -164,12 +174,12 @@ public class ControladorPartida {
                             Output.mostrarConSalto("No hay fichas en el stock. Pasas turno.");
                             partida.proximoTurno();
                             continue;
-                        }//con stock
+                        }
                     } else {
                         Output.mostrarConSalto("No tienes jugadas posibles. Pasas turno.");
                         partida.proximoTurno();
                         continue;
-                    }//sin stock
+                    }
                 }
                 turno.imprimirFichas(mesa);
                 partida.jugarTurno();
@@ -210,6 +220,4 @@ public class ControladorPartida {
         }
         return listaModalidades[opcion];
     }
-
 }
-
