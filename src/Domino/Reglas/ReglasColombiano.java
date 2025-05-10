@@ -1,81 +1,81 @@
 package Domino.Reglas;
 
+import Domino.ENUMS.Pais;
 import Domino.Juego.FichaDomino;
 import Domino.Juego.Jugador;
 import Domino.Juego.MazoDomino;
+import Domino.Juego.Mesa;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ReglasColombiano implements ReglasDomino{
+public class ReglasColombiano extends ReglasSinStock implements Serializable {
     @Override
-    public void iniciarMano(List<Jugador> jugadores) {
-
-        MazoDomino mazo = new MazoDomino();
+    public void iniciarMano(List<Jugador> jugadores, Mesa mesa) {
         mazo.crearFichas(6);
         int fichasPorJugador = 7;
-
         for (int i = 0; i < jugadores.size(); i++) {
-            Jugador jugador = jugadores.get(i);
-            mazo.repartirFichas(jugador,fichasPorJugador);
+            mazo.repartirFichas(jugadores.get(i), fichasPorJugador);
+        }
+
+        Jugador turno = determinarJugadorInicial(jugadores);
+        FichaDomino dobleInicial = null;
+        for (int i = 0; i < turno.getFichas().size(); i++) {
+            FichaDomino f = turno.getFichas().get(i);
+            if (f.getLado1() == f.getLado2()
+                    && (dobleInicial == null || f.getLado1() > dobleInicial.getLado1())) {
+                dobleInicial = f;
+            }
+        }
+        if (dobleInicial != null) {
+            turno.eliminarFicha(dobleInicial);
+            mesa.agregarFichaDerecha(dobleInicial);
         }
     }
 
     @Override
     public int calcularPuntuacion(List<Jugador> jugadores) {
-        int puntuacionTotal = 0;
-
+        int puntuacion = 0;
+        Jugador ganador = null;
         for (int i = 0; i < jugadores.size(); i++) {
-            Jugador jugador = jugadores.get(i);
-
-            for (int j = 0; j < jugador.getFichas().size(); j++) {
-                FichaDomino ficha = jugador.getFichas().get(j);
-                puntuacionTotal += ficha.getLado1() + ficha.getLado2();
+            if (jugadores.get(i).getFichas().isEmpty()) {
+                ganador = jugadores.get(i);
+                break;
             }
         }
-
-        return puntuacionTotal;
+        for (int i = 0; i < jugadores.size(); i++) {
+            Jugador j = jugadores.get(i);
+            if (j != ganador) {
+                for (int k = 0; k < j.getFichas().size(); k++) {
+                    FichaDomino f = j.getFichas().get(k);
+                    puntuacion += f.getLado1() + f.getLado2();
+                }
+            }
+        }
+        return puntuacion;
     }
 
-     @Override
-     public Jugador determinarJugadorInicial(List<Jugador> jugadores) {
-
+    @Override
+    public Jugador determinarJugadorInicial(List<Jugador> jugadores) {
+        int mejor = -1;
+        Jugador elegido = jugadores.get(0);
         for (int i = 0; i < jugadores.size(); i++) {
-            Jugador jugador = jugadores.get(i);
-            for (int j = 0; j < jugador.getFichas().size(); j++) {
-                FichaDomino ficha = jugador.getFichas().get(j);
-
-                    if (ficha.getLado1() == 6 && ficha.getLado2() == 6){
-                        return jugador;
-                    }
+            Jugador j = jugadores.get(i);
+            for (int k = 0; k < j.getFichas().size(); k++) {
+                FichaDomino f = j.getFichas().get(k);
+                if (f.getLado1() == f.getLado2() && f.getLado1() > mejor) {
+                    mejor = f.getLado1();
+                    elegido = j;
+                }
             }
         }
-        //primero el doble 6, y sino el 5 y asi
-         int dobleMayor = -1;
-         int indiceInicial = 0;
+        return elegido;
+    }
 
-         for (int i = 0; i < jugadores.size(); i++) {
-             Jugador jugador = jugadores.get(i);
-             for (int j = 0; j < jugador.getFichas().size(); j++) {
-                 FichaDomino ficha = jugador.getFichas().get(j);
-                 if (ficha.getLado1() == ficha.getLado2() && ficha.getLado1() > dobleMayor){
-                     dobleMayor = ficha.getLado1();
-                     indiceInicial = i;
-                 }
-             }
-         }
-
-         return jugadores.get(indiceInicial);
-     }
-
-     @Override
-     public boolean sePuedeJugar(List<Jugador> jugadores) {
-
-        for (int i = 0; i < jugadores.size(); i++) {
-            if (jugadores.get(i).tieneFichas()){
-                return true;
-            }
-        }
-
-        return false;
-     }
+    @Override
+    public Jugador determinarGanadorBloqueo(List<Jugador> jugadores, Mesa mesa, Pais pais, int turnoActual){
+        return null;
+    }
 }
+
+

@@ -1,106 +1,85 @@
 package Domino.Reglas;
 
-import Domino.Juego.FichaDomino;
-import Domino.Juego.Jugador;
-import Domino.Juego.JugadorMexicano;
-import Domino.Juego.MazoDomino;
+import Domino.ENUMS.Pais;
+import Domino.Juego.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReglasMexicano extends ReglasConStock {
-    private ArrayList<FichaDomino> trenComun;
-
-    public ReglasMexicano(){
-        super();
-        trenComun = new ArrayList<FichaDomino>();
-    }
+public class ReglasMexicano extends ReglasConStock implements Serializable {
 
     @Override
-    public void iniciarMano(List<Jugador> jugadores) {
-        ArrayList<JugadorMexicano> jugadoresMexicanos = new ArrayList<>();
-        for (int i = 0; i < jugadores.size(); i++) {
-            jugadoresMexicanos.add((JugadorMexicano) jugadores.get(i));
-        }
-        MazoDomino mazo = new MazoDomino();
+    public void iniciarMano(List<Jugador> jugadores, Mesa mesa) {
         mazo.crearFichas(9);
         int fichasPorJugador = 7;
         for (int i = 0; i < jugadores.size(); i++) {
-            JugadorMexicano jugador = jugadoresMexicanos.get(i);
-            mazo.repartirFichas(jugador, fichasPorJugador);
-            jugador.setTrenPersonal(new ArrayList<FichaDomino>());
+            mazo.repartirFichas(jugadores.get(i), fichasPorJugador);
         }
-        stock = mazo.getStock();
-        trenComun = new ArrayList<FichaDomino>();
+        stock.clear();
+        stock.addAll(mazo.getFichasRestantes());
+
+        Jugador turno = determinarJugadorInicial(jugadores);
         FichaDomino dobleInicial = null;
-        int indiceInicial = -1;
-        for (int i = 0; i < jugadores.size(); i++) {
-            JugadorMexicano jugador = jugadoresMexicanos.get(i);
-            for (int j = 0; j < jugador.getFichas().size(); j++) {
-                FichaDomino ficha = jugador.getFichas().get(j);
-                if (ficha.getLado1() == ficha.getLado2()){
-                    if (dobleInicial == null || ficha.getLado1() > dobleInicial.getLado1()){
-                        dobleInicial = ficha;
-                        indiceInicial = i;
-                    }
-                }
+            for (int i = 0; i < turno.getFichas().size(); i++) {
+            FichaDomino f = turno.getFichas().get(i);
+            if (f.getLado1() == f.getLado2()
+                && (dobleInicial == null || f.getLado1() > dobleInicial.getLado1())) {
+                dobleInicial = f;
             }
         }
-        if (dobleInicial != null && indiceInicial != -1){
-            JugadorMexicano jugadorInicial = jugadoresMexicanos.get(indiceInicial);
-            for (int i = 0; i < jugadorInicial.getFichas().size(); i++) {
-                FichaDomino ficha = jugadorInicial.getFichas().get(i);
-                if (ficha.equals(dobleInicial)){
-                    jugadorInicial.getFichas().remove(i);
-                    jugadorInicial.agregarAlTrenPersonal(dobleInicial);
-                    break;
-                }
-            }
+        if (dobleInicial != null) {
+        turno.eliminarFicha(dobleInicial);
+        mesa.agregarFichaDerecha(dobleInicial);
         }
     }
 
+
     @Override
     public int calcularPuntuacion(List<Jugador> jugadores) {
-        int puntuacionTotal = 0;
+        int puntos = 0;
+        Jugador ganador = null;
         for (int i = 0; i < jugadores.size(); i++) {
-            Jugador jugador = jugadores.get(i);
-            for (int j = 0; j < jugador.getFichas().size(); j++) {
-                FichaDomino ficha = jugador.getFichas().get(j);
-                puntuacionTotal += ficha.getLado1() + ficha.getLado2();
+            if (jugadores.get(i).getFichas().isEmpty()) {
+                ganador = jugadores.get(i);
+                break;
             }
         }
-        return puntuacionTotal;
+        for (int i = 0; i < jugadores.size(); i++) {
+            Jugador j = jugadores.get(i);
+            if (j != ganador) {
+                for (int k = 0; k < j.getFichas().size(); k++) {
+                    FichaDomino f = j.getFichas().get(k);
+                    puntos += f.getLado1() + f.getLado2();
+                }
+            }
+        }
+        return puntos;
     }
 
     @Override
     public Jugador determinarJugadorInicial(List<Jugador> jugadores) {
-        FichaDomino dobleInicial = null;
-        int indiceInicial = 0;
+        FichaDomino mejor = null;
+        Jugador elegido = jugadores.get(0);
         for (int i = 0; i < jugadores.size(); i++) {
-            Jugador jugador = jugadores.get(i);
-            for (int j = 0; j < jugador.getFichas().size(); j++) {
-                FichaDomino ficha = jugador.getFichas().get(j);
-                if (ficha.getLado1() == ficha.getLado2()){
-                    if (dobleInicial == null || ficha.getLado1() > dobleInicial.getLado1()){
-                        dobleInicial = ficha;
-                        indiceInicial = i;
+            Jugador j = jugadores.get(i);
+            for (int k = 0; k < j.getFichas().size(); k++) {
+                FichaDomino f = j.getFichas().get(k);
+                if (f.getLado1() == f.getLado2()) {
+                    if (mejor == null || f.getLado1() > mejor.getLado1()) {
+                        mejor = f;
+                        elegido = j;
                     }
                 }
             }
         }
-        return jugadores.get(indiceInicial);
+        return elegido;
     }
-
     @Override
-    public boolean sePuedeJugar(List<Jugador> jugadores) {
-        for (int i = 0; i < jugadores.size(); i++) {
-            if (jugadores.get(i).tieneFichas()){
-                return true;
-            }
-        }
-        return false;
+    public Jugador determinarGanadorBloqueo(List<Jugador> jugadores, Mesa mesa, Pais pais, int turnoActual){
+        int total = jugadores.size();
+        int indiceUltimo = (turnoActual - 1 + total) % total;
+        return jugadores.get(indiceUltimo);
     }
 
-    public ArrayList<FichaDomino> getTrenComun() {
-        return trenComun;
-    }
 }

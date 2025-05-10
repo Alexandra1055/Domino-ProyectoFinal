@@ -1,10 +1,14 @@
 package Domino.Juego;
 
+import Domino.ENUMS.Pais;
+import Domino.IO.Output;
 import Domino.Reglas.ReglasConStock;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Mesa {
+public class Mesa implements Serializable {
+    private static final long serialVersionUID = 1L;
     ArrayList<FichaDomino> fichaMesa;
 
     public Mesa(){
@@ -32,7 +36,7 @@ public class Mesa {
                 ficha = ficha.girarFicha();
             }
             if (!puedeColocarseIzquierda(ficha)) {
-                System.out.println("La ficha " + ficha.toString() + " NO se puede colocar a la izquierda.");
+                Output.mostrarConSalto("La ficha " + ficha.toString() + " NO se puede colocar a la izquierda.");
                 return;
             }
         }
@@ -46,7 +50,7 @@ public class Mesa {
                 ficha = ficha.girarFicha();
             }
             if (!puedeColocarseDerecha(ficha)) {
-                System.out.println("La ficha " + ficha.toString() + " NO se puede colocar a la derecha.");
+                Output.mostrarConSalto("La ficha " + ficha.toString() + " NO se puede colocar a la derecha.");
                 return;
             }
         }
@@ -84,12 +88,36 @@ public class Mesa {
         return false;
     }
 
-
-    public void imprimirMesa(){
+    public void imprimirMesa() {
+        Output.mostrarConSalto("Estado actual de la mesa:");
         for (int i = 0; i < fichaMesa.size(); i++) {
-            System.out.print(fichaMesa.get(i).toString() + " ");
+            Output.mostrarSinSalto(fichaMesa.get(i).toString() + " ");
         }
-        System.out.println();
+        Output.mostrarConSalto("");
+    }
+
+    public boolean estaBloqueado(Pais pais) {
+        if (fichaMesa.isEmpty()) {
+            return false;
+        }
+        int extremoIzq = valorFichaLadoIzquierdo();
+        int extremoDer = valorFichaLadoDerecho();
+        int contadorIzq = 0;
+        int contadorDer = 0;
+
+        int totalFichas = pais.getTotalFichas();
+        int umbral = (totalFichas == 28) ? 7 : 10;
+
+        for (int i = 0; i < fichaMesa.size(); i++) {
+            FichaDomino ficha = fichaMesa.get(i);
+            if (ficha.getLado1() == extremoIzq || ficha.getLado2() == extremoIzq) {
+                contadorIzq++;
+            }
+            if (ficha.getLado1() == extremoDer || ficha.getLado2() == extremoDer) {
+                contadorDer++;
+            }
+        }
+        return contadorIzq >= umbral && contadorDer >= umbral;
     }
 
 }

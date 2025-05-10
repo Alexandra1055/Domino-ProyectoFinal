@@ -1,8 +1,11 @@
 package Domino.Juego;
 
+import Domino.IO.Output;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Equipo {
+public class Equipo implements Serializable {
     private String nombre; //equipo 1, equipo 2, por ejemplo, asi tengo donde meter los jugadores que van juntos
     private ArrayList<Jugador> jugadores;
 
@@ -16,7 +19,7 @@ public class Equipo {
             jugadores.add(jugador);
             return true;
         }else {
-            System.out.println("Los equipos no pueden estar formados por mas de 2 jugadores");
+            Output.mostrarConSalto("Los equipos no pueden estar formados por mas de 2 jugadores");
             return false;
         }
     }
@@ -29,12 +32,12 @@ public class Equipo {
         return jugadores;
     }
 
-    public void imprimirFichasEquipo(){
-        System.out.println("El equipo '" + nombre + "' ,tiene las fichas: ");
+    public void imprimirFichasEquipo(Mesa mesa){
+        Output.mostrarConSalto("El equipo '" + nombre + "' ,tiene las fichas: ");
 
         for (int i = 0; i < jugadores.size(); i++) {
             Jugador jugador = jugadores.get(i);
-            jugador.imprimirFichas(); //uso el metodo de jugador para los equipos
+            jugador.imprimirFichas(mesa); //uso el metodo de jugador para los equipos
         }
     }
 

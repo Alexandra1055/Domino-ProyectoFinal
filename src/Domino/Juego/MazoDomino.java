@@ -1,9 +1,11 @@
 package Domino.Juego;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MazoDomino {
+public class MazoDomino implements Serializable {
+    private static final long serialVersionUID = 1L;
     ArrayList<FichaDomino> fichas;
 
     public MazoDomino() {
